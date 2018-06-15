@@ -7,11 +7,18 @@ import scipy.linalg as LA
 
 class CJ (object):
     """
-    Return a Choi-Jamilkowski matrix after a given amount 
-    of state evolution. This is equivalent to the chi-matrix 
+    Return a Choi-Jamilkowski matrix after a given amount
+    of state evolution. This is equivalent to the chi-matrix
     for the evolution
     """
     def __init__(self, indices, hamiltonian):
+        """
+        Initialize a Choi-Jamilkowski instance with the subspace
+        of interest given by indices, and the kernel of the unitary
+        evolution, given by hamiltonian (units: angular GHz).
+
+        If non-Hamiltonian evolution is needed go elsewhereself.
+        """
         dim = hamiltonian.shape[0]
         norm = 1.0 / float(len(indices))
         converted_indices = int((dim + 1) * indices)
@@ -20,10 +27,16 @@ class CJ (object):
         self.kernel = np.kron(np.identity(hamiltonian.shape[0]), hamiltonian)
 
     def chi_final(self, tfinal):
+        """
+        Using the kernel given in initialition, find the final chi_matrix
+        """
         unitary = LA.expm(-1j*tfinal*self.kernel)
         return unitary @ self.chi0 @ unitary.conj().T
 
     def infidelity(self, tfinal):
+        """
+        Calculate the infidelity of the operation being characterized.
+        """
         chi_f = self.chi_final(tfinal)
         trace1 = np.real(np.trace(self.chi0 @ chi_f))
         trace2 = np.real(np.trace(chi_f))
