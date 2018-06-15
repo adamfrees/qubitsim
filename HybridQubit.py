@@ -43,7 +43,7 @@ def second_order_sweet_spot_match_finder(fit_params_init, operating_point, match
     tunings = root(soss_helper,
                    fit_params_init,
                    args=(operating_point, matchfreq),
-                   method='hybr', tol=1e-8, 
+                   method='hybr', tol=1e-8,
                    options = {'eps': 1e-6}).x
     return tunings
 
@@ -85,8 +85,8 @@ class HybridQubit(object):
 
     def energy_detuning(self, detuning):
         """
-        Return the qubit energy as a function of detuning using the 
-        given values of stsplitting, delta1, delta2. Primarily a convenience 
+        Return the qubit energy as a function of detuning using the
+        given values of stsplitting, delta1, delta2. Primarily a convenience
         function for noise derivative calculations.
         Inputs:
           detuning [(GHz)] : dipolar detuning array
@@ -157,9 +157,9 @@ if __name__ == '__main__':
         # guess_array = [qubit.stsplitting, qubit.delta1, qubit.delta2]
 
     fig, ax = plt.subplots()
-    ax.plot(ed_ratio_array, delta1_array, 
+    ax.plot(ed_ratio_array, delta1_array,
             color='dodgerblue', label=r'$\Delta_{1} / E_{ST}$')
-    ax.plot(ed_ratio_array, delta2_array, 
+    ax.plot(ed_ratio_array, delta2_array,
             color='darkorange', label=r'$\Delta_{2} / E_{ST}$')
     ax.set_xlabel(r'$\epsilon / E_{ST}$')
     plt.show()
