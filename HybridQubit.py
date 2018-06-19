@@ -141,25 +141,3 @@ class SOSSHybrid(HybridQubit):
         stsplitting, delta1, delta2 = tunings
         ed = ed_ratio * stsplitting
         super().__init__(ed, stsplitting, delta1, delta2)
-
-
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    ed_ratio_array = np.linspace(0.5, 6.0, 20)
-    delta1_array = np.zeros((20))
-    delta2_array = np.zeros((20))
-    # guess_array = [4.0, 0.64*10.0, 0.68*10.0]
-    for i in range(20):
-        ed_ratio = ed_ratio_array[i]
-        qubit = SOSSHybrid(ed_ratio, 10.0)
-        delta1_array[i] = qubit.delta1 / qubit.stsplitting
-        delta2_array[i] = qubit.delta2 / qubit.stsplitting
-        # guess_array = [qubit.stsplitting, qubit.delta1, qubit.delta2]
-
-    fig, ax = plt.subplots()
-    ax.plot(ed_ratio_array, delta1_array,
-            color='dodgerblue', label=r'$\Delta_{1} / E_{ST}$')
-    ax.plot(ed_ratio_array, delta2_array,
-            color='darkorange', label=r'$\Delta_{2} / E_{ST}$')
-    ax.set_xlabel(r'$\epsilon / E_{ST}$')
-    plt.show()
