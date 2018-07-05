@@ -1,0 +1,5 @@
+# Ignore compiled c python
+*.pyc
+
+# Ignore analysis Jupyter notebooks
+TestingNotebooks/

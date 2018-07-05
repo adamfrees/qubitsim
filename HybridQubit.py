@@ -95,10 +95,10 @@ class HybridQubit(object):
         """
         return_array = np.zeros(len(detuning))
         for i in range(len(detuning)):
-            H0 = 2*math.pi*np.array([[-0.5*detuning[i], 0, self.delta1],
-                                     [0, -0.5*detuning[i] + self.stsplitting, -self.delta2],
-                                     [self.delta1, -self.delta2, 0.5*detuning[i]]])
-            evals = LA.eigvalsh(H0)
+            H0 = np.array([[-0.5*detuning[i], 0, self.delta1],
+                           [0, -0.5*detuning[i] + self.stsplitting, -self.delta2],
+                           [self.delta1, -self.delta2, 0.5*detuning[i]]])
+            evals = LA.eigvalsh(2*math.pi*H0)
             return_array[i] = evals[1] - evals[0]
         return return_array
 
