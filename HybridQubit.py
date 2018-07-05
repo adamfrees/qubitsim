@@ -70,10 +70,10 @@ class HybridQubit(object):
         """
         Return the hamiltonian of the hybrid qubit in units of angular GHz.
         """
-        H0 = 2*math.pi*np.array([[-0.5 * self.ed, 0, self.delta1],
-                                 [0, -0.5*self.ed + self.stsplitting, -self.delta2],
-                                 [self.delta1, -self.delta2, 0.5*self.ed]])
-        return H0
+        H0 = np.array([[-0.5 * self.ed, 0, self.delta1],
+                       [0, -0.5*self.ed + self.stsplitting, -self.delta2],
+                       [self.delta1, -self.delta2, 0.5*self.ed]])
+        return 2 * math.pi * H0
 
     def qubit_basis(self):
         """
