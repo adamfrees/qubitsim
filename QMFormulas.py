@@ -18,7 +18,7 @@ def eigvector_phase_sort(eig_matrix):
 def gaussian(x, mean, sigma):
     """Return the value of a normalized gaussian probability distribution
     with mean mu, standard deviation sigma, at the value x"""
-    return np.exp(-np.power(x-mean, 2)/(2*np.power(sigma, 2))) / (np.sqrt(2*np.pi*sigma**2))
+    return np.exp(-np.square(x-mean)/(2*np.square(sigma))) / (np.sqrt(2*np.pi*sigma**2))
 
 
 def basischange(rho0, U):
