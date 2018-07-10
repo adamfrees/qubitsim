@@ -26,7 +26,7 @@ def basischange(rho0, U):
     basis defined by U. Can also be used for unitary 
     transformation of a density matrix rho0"""
     # return LA.multi_dot([U, rho0, np.conjugate(U.T)])
-    return np.dot(U, np.dot(rho0, U.conj().T))
+    return U @ rho0 @ U.conj().T
 
 
 def processInfidelity(chiIdeal, chiActual):
@@ -42,13 +42,13 @@ def processInfidelity(chiIdeal, chiActual):
 def commutator(A, B):
     """Return the commutator between two equivalently dimensioned 
     matrices A and B"""
-    return np.dot(A, B) - np.dot(B, A)
+    return A @ B - B @ A
 
 
 def anticommutator(A, B):
     """Return the anti-commutator between two equivalently dimensioned
     matrices A and B"""
-    return np.dot(A, B) + np.dot(B, A)
+    return A @ B + B @ A
 
 
 def frobenius_inner(A, B):
