@@ -23,7 +23,7 @@ def simple_noise_sampling(tfinal):
     a coarse noise sample and will progressively 
     refine the sample until convergence is found
     """
-    ueV_conversion = .241799050402417
+    ueV_conversion = 0.241799050402417
     sigma_test = 5.0 * ueV_conversion
     samples_init = 11
     x_init = np.linspace(-7 * sigma_test, 7 * sigma_test, samples_init)
