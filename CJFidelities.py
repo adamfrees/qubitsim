@@ -17,7 +17,7 @@ class CJ (object):
         of interest given by indices, and the kernel of the unitary
         evolution, given by hamiltonian (units: angular GHz).
 
-        If non-Hamiltonian evolution is needed go elsewhereself.
+        If non-Hamiltonian evolution is needed go elsewhere.
         """
         dim = hamiltonian.shape[0]
         norm = 1.0 / float(len(indices))
