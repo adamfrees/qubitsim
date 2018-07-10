@@ -25,7 +25,6 @@ def basischange(rho0, U):
     """Perform a matrix transformation into the 
     basis defined by U. Can also be used for unitary 
     transformation of a density matrix rho0"""
-    # return LA.multi_dot([U, rho0, np.conjugate(U.T)])
     return U @ rho0 @ U.conj().T
 
 
