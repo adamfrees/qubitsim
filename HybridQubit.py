@@ -60,11 +60,14 @@ class HybridQubit(object):
           stsplitting : singlet-triplet splitting in right dot
           delta1: 0-1 tunnel coupling
           delta2: 0-2 tunnel coupling
+
+        Also creates a dimension property that is accessible
         """
         self.ed = ed
         self.stsplitting = stsplitting
         self.delta1 = delta1
         self.delta2 = delta2
+        self.dim = 3
 
     def hamiltonian_lab(self):
         """
