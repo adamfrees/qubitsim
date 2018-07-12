@@ -9,11 +9,22 @@ import HybridQubit as hybrid
 import CJFidelities as cj
 
 
+def bisect_sample(original):
+    """Bisect an original sample given"""
+    return None
+
+
 def noise_sample_run(ded, tfinal):
-    qubit = hybrid.SOSSHybrid(3.0, 10.0)
+    """Run a single noise sample at noise point ded (GHz)
+    and at time tfinal"""
+    operating_point = 3.0
+    match_freq = 10.0
+    indices = [0, 1]
+    qubit = hybrid.SOSSHybrid(operating_point, match_freq)
     H0 = qubit.hamiltonian_lab()
     noise = qubit.detuning_noise_lab(ded)
-    ChoiSimulation = cj.CJ([0,1], H0+noise)
+
+    ChoiSimulation = cj.CJ(indices, H0+noise)
     return ChoiSimulation.chi_final(tfinal)
 
 
