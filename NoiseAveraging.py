@@ -11,7 +11,7 @@ import CJFidelities as cj
 
 def noise_doubling(original):
     """Bisect an original sample given"""
-    new_samples = 0.5 * np.diff(original) + original[-1]
+    new_samples = 0.5 * np.diff(original) + original[:-1]
     full_array = np.empty((original.size + new_samples.size,), dtype=original.dtype)
     full_array[0::2] = original
     full_array[1::2] = new_samples
