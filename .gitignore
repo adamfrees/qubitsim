@@ -3,3 +3,6 @@
 
 # Ignore analysis Jupyter notebooks
 TestingNotebooks/
+
+# Ignore test caches
+.cache/v/cache/lastfailed
