@@ -32,6 +32,19 @@ def noise_sample_run(ded, tfinal):
     return ChoiSimulation.chi_final(tfinal)
 
 
+def noise_iteration(noise_samples, tfinal):
+    """
+    Given an array of noise values to sample and a simulation time,
+    return the array of process matrices corresponding to this solution.
+    """
+    cj_array = np.zeros((9, 9, noise_samples.shape[0]))
+    for i in range(noise_samples.shape[0]):
+        ded = noise_samples[i]
+        cj_array[:, :, i] += noise_sample_run(ded, tfinal)
+    return cj_array
+
+
+
 def simple_noise_sampling(tfinal):
     """
     This algorithm will start with
