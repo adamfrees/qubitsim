@@ -52,12 +52,13 @@ def simple_noise_sampling(tfinal):
     refine the sample until convergence is found
     """
     ueV_conversion = 0.241799050402417
-    sigma_test = 5.0 * ueV_conversion
-    samples_init = 11
-    x_init = np.linspace(-7 * sigma_test, 7 * sigma_test, samples_init)
-    noise_samples_init = qmf.gaussian(x_init, 0.0, sigma_test)
-    cj_array = np.zeros((9, 9, samples_init), dtype=complex)
-    for i in range(samples_init):
-        ded = noise_samples_init[i]
-        cj_array[:, :, i] += noise_sample_run(ded, tfinal)
+    sigma = 5.0 * ueV_conversion
+    samples0 = 11
+    x0 = np.linspace(-7 * sigma, 7*sigma, samples0)
+    noise_samples0 = qmf.gaussian(x0, 0.0, sigma)
+    notConverged = True
+    while notConverged:
+        x1 = noise_doubling(x0)
+        noise_samples1 = qmf.gaussian(x1, 0.0, sigma)
+        cj_array = noise_iteration(noise_samples0, tfinal)
     return None
