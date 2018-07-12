@@ -44,6 +44,21 @@ def noise_iteration(noise_samples, tfinal):
     return cj_array
 
 
+def noise_averaging(x, noise_samples, cj_array):
+    diff_array = np.diff(x)
+    if np.allclose(diff_array):
+        # In this case, equal spacing was used for x
+        # allowing a faster trapz implementation
+        dx = np.mean(diff_array)
+        norm = np.trapz(noise_samples, dx=dx)
+        matrix_int = np.trapz(np.multiply(cj_array, noise_samples), dx=dx)
+        return matrix_int / norm
+    else:
+        # We got less lucky, so we'll use the more general method
+        norm = np.trapz(noise_samples, x=x)
+        matrix_int = np.trapz(np.multiply(cj_array, noise_samples), x=x)
+        return matrix_int / norm
+
 
 def simple_noise_sampling(tfinal):
     """
