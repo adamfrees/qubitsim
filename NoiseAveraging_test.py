@@ -10,7 +10,7 @@ def noise_sample():
     import numpy as np
     orig = np.arange(0, 12, 2)
     interleave = np.arange(1, 11, 2)
-    full = np.arange(0, 12, 1)
+    full = np.arange(0, 11, 1)
     return orig, interleave, full
 
 
