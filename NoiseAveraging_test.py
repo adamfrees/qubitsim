@@ -5,13 +5,14 @@ import numpy as np
 
 import NoiseAveraging
 
-def noise_doubling_testing_doubling():
+
+class Test_Doubling_function(object):
     original_test = np.arange(0, 12, 2)
     new_samples, full_sampling = NoiseAveraging.noise_doubling(original_test)
-    assert new_samples == np.arange(1, 11, 2)
+
+    def test_noise_doubling(self, new_samples):
+        assert new_samples == np.arange(1, 11, 2)
 
 
-def noise_doubling_full_array_test():
-    original_test = np.arange(0, 12, 2)
-    new_samples, full_sampling = NoiseAveraging.noise_doubling(original_test)
-    assert full_sampling == np.arange(0, 12, 1)
+    def test_noise_doubling_full_array(self, full_sampling):
+        assert full_sampling == np.arange(0, 12, 1)
