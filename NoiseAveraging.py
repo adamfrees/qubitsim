@@ -46,7 +46,7 @@ def noise_iteration(noise_samples, tfinal):
 
 def noise_averaging(x, noise_samples, cj_array):
     diff_array = np.diff(x)
-    if np.allclose(diff_array):
+    if np.allclose(np.diff(diff_array), np.zeros((len(x) - 2))):
         # In this case, equal spacing was used for x
         # allowing a faster trapz implementation
         dx = np.mean(diff_array)
