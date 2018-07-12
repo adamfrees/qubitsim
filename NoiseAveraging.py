@@ -43,4 +43,8 @@ def simple_noise_sampling(tfinal):
     samples_init = 11
     x_init = np.linspace(-7 * sigma_test, 7 * sigma_test, samples_init)
     noise_samples_init = qmf.gaussian(x_init, 0.0, sigma_test)
+    cj_array = np.zeros((9, 9, samples_init), dtype=complex)
+    for i in range(samples_init):
+        ded = noise_samples_init[i]
+        cj_array[:, :, i] += noise_sample_run(ded, tfinal)
     return None
