@@ -9,7 +9,7 @@ import HybridQubit as hybrid
 import CJFidelities as cj
 
 
-def bisect_sample(original):
+def noise_doubling(original):
     """Bisect an original sample given"""
     new_samples = 0.5 * np.diff(original) + original[-1]
     full_array = np.empty((original.size + new_samples.size,), dtype=original.dtype)
