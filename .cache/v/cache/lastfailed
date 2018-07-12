@@ -1,1 +1,5 @@
-{}
+{
+  "NoiseAveraging_test.py::Test_Doubling_function::()::test_noise_doubling_full_array": true,
+  "NoiseAveraging_test.py::test_noise_doubling": true,
+  "NoiseAveraging_test.py::test_noise_doubling_full_array": true
+}
