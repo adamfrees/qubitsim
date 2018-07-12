@@ -11,7 +11,11 @@ import CJFidelities as cj
 
 def bisect_sample(original):
     """Bisect an original sample given"""
-    return None
+    new_samples = 0.5 * np.diff(original) + original[-1]
+    full_array = np.empty((original.size + new_samples.size,), dtype=original.dtype)
+    full_array[0::2] = original
+    full_array[1::2] = new_samples
+    return new_samples
 
 
 def noise_sample_run(ded, tfinal):
