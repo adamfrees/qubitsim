@@ -134,9 +134,19 @@ class SOSSHybrid(HybridQubit):
     resonant at some given frequency"""
 
 
-    def __init__(self, ed_ratio, matchfreq, guess_array=[10.0, 6.4, 6.6]):
+    def __init__(self, ed_ratio, matchfreq):
+        from scipy.interpolate import interp1d
         self.ed_ratio = ed_ratio
         self.matchfreq = matchfreq
+        ed_ratio_array_ref = np.load('ed_ratio_ref.npy')
+        stsplitting_array_ref = np.load('stsplitting_ref.npy')
+        delta1_array_ref = np.load('delta1_ref.npy')
+        delta2_array_ref = np.load('delta2_ref.npy')
+
+        stsplitting_f = interp1d(ed_ratio_array_ref, stsplitting_array_ref)
+        delta1_f = interp1d(ed_ratio_array_ref, delta1_array_ref)
+        delta2_f = interp1d(ed_ratio_array_ref, delta2_array_ref)
+
         ed_testing_ratio = np.arange(12.0, ed_ratio+0.01, -0.01)
         for ed in ed_testing_ratio:
             tunings = second_order_sweet_spot_match_finder(guess_array, ed, matchfreq)
