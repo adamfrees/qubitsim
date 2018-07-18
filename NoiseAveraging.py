@@ -71,9 +71,19 @@ def simple_noise_sampling(tfinal):
     samples0 = 11
     x0 = np.linspace(-7 * sigma, 7*sigma, samples0)
     noise_samples0 = qmf.gaussian(x0, 0.0, sigma)
+    cj_array0 = noise_iteration(noise_samples0, tfinal)
+    average_cj0 = noise_averaging(x0, noise_samples0, cj_array0)
     notConverged = True
     while notConverged:
         x1 = noise_doubling(x0)
         noise_samples1 = qmf.gaussian(x1, 0.0, sigma)
-        cj_array = noise_iteration(noise_samples0, tfinal)
-    return None
+        cj_array1 = noise_iteration(noise_samples1, tfinal)
+        average_cj1 = noise_averaging(x1, noise_samples1, cj_array1)
+        if np.linalg.norm(average_cj0 - average_cj1) < 1e-4:
+            notConverged == False
+        else:
+            x0 = x1
+            noise_samples0 = noise_samples1
+            cj_array0 = cj_array1
+            average_cj0 = average_cj1
+    return average_cj0
