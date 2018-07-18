@@ -90,6 +90,7 @@ def simple_noise_sampling(tfinal, samples0=15):
         print(converge_value)
 
         samples = len(noise_samples0)
+        print(samples)
 
         x0 = x1full
         noise_samples0 = noise_samples1full
