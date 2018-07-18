@@ -76,7 +76,7 @@ def simple_noise_sampling(tfinal, samples0=15):
     cj_array0 = noise_iteration(noise_samples0, tfinal)
     average_cj0 = noise_averaging(x0, noise_samples0, cj_array0)
     converge_value = 1.0
-    while converge_value > 1e-8:
+    while converge_value > 1e-9:
         x1new, x1full = noise_doubling(x0)
         noise_samples1new = qmf.gaussian(x1new, 0.0, sigma)
         noise_samples1full = qmf.gaussian(x1full, 0.0, sigma)
@@ -99,10 +99,11 @@ def simple_noise_sampling(tfinal, samples0=15):
 
 
 def bare_time_evolution():
-    trange = np.linspace(0, 500, 30)
-    cj_time_array = np.zeros((9, 9, 20), dtype=complex)
-    samples = 15
-    for i in range(20):
+    tsteps = 40
+    trange = np.linspace(0, 60, tsteps)
+    cj_time_array = np.zeros((9, 9, tsteps), dtype=complex)
+    samples = 31
+    for i in range(tsteps):
         cj_average, samples = simple_noise_sampling(trange[i], samples)
         print(samples)
         cj_time_array[:, :, i] += cj_average
