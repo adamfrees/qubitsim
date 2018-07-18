@@ -21,7 +21,7 @@ class CJ (object):
         """
         dim = hamiltonian.shape[0]
         norm = 1.0 / float(len(indices))
-        converted_indices = int((dim + 1) * indices)
+        converted_indices = int((dim + 1))) * indices
         chi0 = np.zeros((dim**2, dim**2), dtype=complex)
         self.chi0 = chi0[np.ix_(converted_indices, converted_indices)] = norm
         self.kernel = np.kron(np.identity(dim), hamiltonian)
