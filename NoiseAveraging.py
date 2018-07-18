@@ -86,4 +86,4 @@ def simple_noise_sampling(tfinal):
             noise_samples0 = noise_samples1
             cj_array0 = cj_array1
             average_cj0 = average_cj1
-    return average_cj0
+    return average_cj1
