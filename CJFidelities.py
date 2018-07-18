@@ -31,8 +31,11 @@ class CJ (object):
         """
         Using the kernel given in initialition, find the final chi_matrix
         """
-        unitary = LA.expm(-1j*tfinal*self.kernel)
-        return unitary @ self.chi0 @ unitary.conj().T
+        if tfinal == 0.0:
+            return self.chi0
+        else:
+            unitary = LA.expm(-1j*tfinal*self.kernel)
+            return unitary @ self.chi0 @ unitary.conj().T
 
     def infidelity(self, tfinal):
         """
