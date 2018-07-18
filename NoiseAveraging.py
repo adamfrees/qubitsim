@@ -63,7 +63,7 @@ def noise_averaging(x, noise_samples, cj_array):
         return matrix_int / norm
 
 
-def simple_noise_sampling(tfinal):
+def simple_noise_sampling(tfinal, samples0=15):
     """
     This algorithm will start with
     a coarse noise sample and will progressively 
@@ -71,7 +71,6 @@ def simple_noise_sampling(tfinal):
     """
     ueV_conversion = 0.241799050402417
     sigma = 5.0 * ueV_conversion
-    samples0 = 15
     x0 = np.linspace(-7 * sigma, 7*sigma, samples0)
     noise_samples0 = qmf.gaussian(x0, 0.0, sigma)
     cj_array0 = noise_iteration(noise_samples0, tfinal)
@@ -90,18 +89,23 @@ def simple_noise_sampling(tfinal):
 
         print(converge_value)
 
+        samples = len(noise_samples0)
+
         x0 = x1full
         noise_samples0 = noise_samples1full
         cj_array0 = cj_array1
         average_cj0 = average_cj1
-    return average_cj1
+    return average_cj1, samples
 
 
 def bare_time_evolution():
     trange = np.linspace(0, 500, 30)
     cj_time_array = np.zeros((9, 9, 20), dtype=complex)
+    samples = 15
     for i in range(20):
-        cj_time_array[:, :, i] += simple_noise_sampling(trange[i])
+        cj_average, samples = simple_noise_sampling(trange[i], samples)
+        print(samples)
+        cj_time_array[:, :, i] += cj_average
     return trange, cj_time_array
 
 
