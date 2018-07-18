@@ -95,3 +95,9 @@ def bare_time_evolution():
     for i in range(20):
         cj_time_array[:, :, i] += simple_noise_sampling(trange[i])
     return trange, cj_time_array
+
+
+if __name__ == '__main__':
+    trange, cj_time_array = bare_time_evolution()
+    np.save('trange_test.npy', trange)
+    np.save('cj_array_test.npy', cj_time_array)
