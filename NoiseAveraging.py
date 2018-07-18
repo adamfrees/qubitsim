@@ -71,7 +71,7 @@ def simple_noise_sampling(tfinal):
     """
     ueV_conversion = 0.241799050402417
     sigma = 5.0 * ueV_conversion
-    samples0 = 11
+    samples0 = 15
     x0 = np.linspace(-7 * sigma, 7*sigma, samples0)
     noise_samples0 = qmf.gaussian(x0, 0.0, sigma)
     cj_array0 = noise_iteration(noise_samples0, tfinal)
