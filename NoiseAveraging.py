@@ -87,3 +87,11 @@ def simple_noise_sampling(tfinal):
             cj_array0 = cj_array1
             average_cj0 = average_cj1
     return average_cj1
+
+
+def bare_time_evolution():
+    trange = np.linspace(0, 30, 20)
+    cj_time_array = np.zeros((9, 9, 20), dtype=complex)
+    for i in range(20):
+        cj_time_array[:, :, i] += simple_noise_sampling(trange[i])
+    return trange, cj_time_array
