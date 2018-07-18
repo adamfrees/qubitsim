@@ -147,10 +147,8 @@ class SOSSHybrid(HybridQubit):
         delta1_f = interp1d(ed_ratio_array_ref, delta1_array_ref)
         delta2_f = interp1d(ed_ratio_array_ref, delta2_array_ref)
 
-        ed_testing_ratio = np.arange(12.0, ed_ratio+0.01, -0.01)
-        for ed in ed_testing_ratio:
-            tunings = second_order_sweet_spot_match_finder(guess_array, ed, matchfreq)
-            guess_array = tunings
-        stsplitting, delta1, delta2 = tunings
-        ed = ed_ratio * stsplitting
+        stsplitting = (matchfreq / 10.0) * stsplitting_f(ed_ratio)
+        ed = stsplitting * ed_ratio
+        delta1 = stsplitting * delta1_f(ed_ratio)
+        delta2 = stsplitting * delta2_f(ed_ratio)
         super().__init__(ed, stsplitting, delta1, delta2)
