@@ -12,7 +12,7 @@ import CJFidelities as cj
 def noise_doubling(original):
     """Bisect an original sample given"""
     new_samples = 0.5 * np.diff(original) + original[:-1]
-    full_array = np.empty((original.size + new_samples.size,), dtype=original.dtype)
+    full_array = np.zeros((original.size + new_samples.size,), dtype=original.dtype)
     full_array[0::2] = original
     full_array[1::2] = new_samples
     return new_samples, full_array
@@ -37,7 +37,7 @@ def noise_iteration(noise_samples, tfinal):
     Given an array of noise values to sample and a simulation time,
     return the array of process matrices corresponding to this solution.
     """
-    cj_array = np.zeros((9, 9, noise_samples.shape[0]))
+    cj_array = np.zeros((9, 9, noise_samples.shape[0]), dtype=complex)
     for i in range(noise_samples.shape[0]):
         ded = noise_samples[i]
         cj_array[:, :, i] += noise_sample_run(ded, tfinal)
@@ -75,15 +75,21 @@ def simple_noise_sampling(tfinal):
     average_cj0 = noise_averaging(x0, noise_samples0, cj_array0)
     notConverged = True
     while notConverged:
-        x1 = noise_doubling(x0)
-        noise_samples1 = qmf.gaussian(x1, 0.0, sigma)
-        cj_array1 = noise_iteration(noise_samples1, tfinal)
-        average_cj1 = noise_averaging(x1, noise_samples1, cj_array1)
-        if np.linalg.norm(average_cj0 - average_cj1) < 1e-5:
+        x1new, x1full = noise_doubling(x0)
+        noise_samples1new = qmf.gaussian(x1new, 0.0, sigma)
+        noise_samples1full = qmf.gaussian(x1full, 0.0, sigma)
+        cj_array1new = noise_iteration(noise_samples1new, tfinal)
+        cj_array1 = np.zeros((9, 9, len(x1full)), dtype=complex)
+        cj_array1[:, :, ::2] = cj_array0
+        cj_array1[:, :, 1::2] = cj_array1new
+        average_cj1 = noise_averaging(x1full, noise_samples1full, cj_array1)
+        converge_value = np.linalg.norm(average_cj0 - average_cj1)
+        print(converge_value)
+        if converge_value < 1e-5:
             notConverged == False
         else:
-            x0 = x1
-            noise_samples0 = noise_samples1
+            x0 = x1full
+            noise_samples0 = noise_samples1full
             cj_array0 = cj_array1
             average_cj0 = average_cj1
     return average_cj1
