@@ -21,7 +21,7 @@ def noise_doubling(original):
 def noise_sample_run(ded, tfinal):
     """Run a single noise sample at noise point ded (GHz)
     and at time tfinal"""
-    operating_point = 3.0
+    operating_point = 4.0
     match_freq = 10.0
     indices = [0, 1]
     qubit = hybrid.SOSSHybrid(operating_point, match_freq)
@@ -48,18 +48,23 @@ def noise_iteration(noise_samples, tfinal):
 
 
 def noise_averaging(x, noise_samples, cj_array):
+    from scipy.integrate import simps
     diff_array = np.diff(x)
     if np.allclose(np.diff(diff_array), np.zeros((len(x) - 2))):
         # In this case, equal spacing was used for x
         # allowing a faster trapz implementation
         dx = np.mean(diff_array)
-        norm = np.trapz(noise_samples, dx=dx)
-        matrix_int = np.trapz(np.multiply(cj_array, noise_samples), dx=dx)
+        # norm = np.trapz(noise_samples, dx=dx)
+        norm = simps(noise_samples, x)
+        # matrix_int = np.trapz(np.multiply(cj_array, noise_samples), dx=dx)
+        matrix_int = simps(np.multiply(cj_array, noise_samples), x)
         return matrix_int / norm
     else:
         # We got less lucky, so we'll use the more general method
-        norm = np.trapz(noise_samples, x=x)
-        matrix_int = np.trapz(np.multiply(cj_array, noise_samples), x=x)
+        # norm = np.trapz(noise_samples, x=x)
+        norm = simps(noise_samples, x)
+        # matrix_int = np.trapz(np.multiply(cj_array, noise_samples), x=x)
+        matrix_int = simps(np.multiply(cj_array, noise_samples), x)
         return matrix_int / norm
 
 
@@ -69,9 +74,10 @@ def simple_noise_sampling(tfinal, samples0=15):
     a coarse noise sample and will progressively 
     refine the sample until convergence is found
     """
+    from scipy.linalg import sqrtm
     ueV_conversion = 0.241799050402417
     sigma = 5.0 * ueV_conversion
-    x0 = np.linspace(-7 * sigma, 7*sigma, samples0)
+    x0 = np.linspace(-10 * sigma, 10*sigma, samples0)
     noise_samples0 = qmf.gaussian(x0, 0.0, sigma)
     cj_array0 = noise_iteration(noise_samples0, tfinal)
     average_cj0 = noise_averaging(x0, noise_samples0, cj_array0)
@@ -85,7 +91,9 @@ def simple_noise_sampling(tfinal, samples0=15):
         cj_array1[:, :, ::2] = cj_array0
         cj_array1[:, :, 1::2] = cj_array1new
         average_cj1 = noise_averaging(x1full, noise_samples1full, cj_array1)
-        converge_value = qmf.processInfidelity(average_cj0, average_cj1)
+        # converge_value = np.sqrt(qmf.processInfidelity(average_cj0, average_cj1))
+        converge_value = np.arccos(np.sqrt(1-qmf.processInfidelity(average_cj0, average_cj1)))
+        print(np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T)))))
 
         print(converge_value)
 

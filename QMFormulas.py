@@ -32,7 +32,7 @@ def processInfidelity(chiIdeal, chiActual):
     """Calculate the process fielity between two 
     matrices chiIdeal and chiActual. chiIdeal and 
     chiActual are not assumed to be unitary processes."""
-    trace1 = np.real(np.trace(np.dot(chiIdeal, chiActual)))
+    trace1 = np.real(np.trace(chiIdeal @ chiActual))
     trace2 = np.real(np.trace(chiIdeal))
     trace3 = np.real(np.trace(chiActual))
     return 1 - trace1 / (trace2 * trace3)
