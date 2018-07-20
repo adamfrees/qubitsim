@@ -85,11 +85,12 @@ def simple_noise_sampling(tfinal, samples0=15):
         cj_array1[:, :, ::2] = cj_array0
         cj_array1[:, :, 1::2] = cj_array1new
         average_cj1 = noise_averaging(x1full, noise_samples1full, cj_array1)
-        converge_value = np.linalg.norm(average_cj0 - average_cj1)
+        converge_value = qmf.processInfidelity(average_cj0, average_cj1)
 
         print(converge_value)
 
         samples = len(noise_samples0)
+        print(samples)
 
         x0 = x1full
         noise_samples0 = noise_samples1full
