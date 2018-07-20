@@ -1,3 +1,5 @@
 [
-  "NoiseAveraging_test.py::test_noise_doubling"
+  "HybridQubit_test.py::test_qubit_initialization",
+  "HybridQubit_test.py::test_qubit_hamiltonian_lab",
+  "HybridQubit_test.py::test_eigenbasis_normalization"
 ]
