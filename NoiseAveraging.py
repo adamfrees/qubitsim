@@ -53,7 +53,7 @@ def noise_averaging(x, noise_samples, cj_array):
     if np.allclose(np.diff(diff_array), np.zeros((len(x) - 2))):
         # In this case, equal spacing was used for x
         # allowing a faster trapz implementation
-        dx = np.mean(diff_array)
+        # dx = np.mean(diff_array)
         # norm = np.trapz(noise_samples, dx=dx)
         norm = simps(noise_samples, x)
         # matrix_int = np.trapz(np.multiply(cj_array, noise_samples), dx=dx)
