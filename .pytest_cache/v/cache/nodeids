@@ -1,5 +1,11 @@
 [
   "HybridQubit_test.py::test_qubit_initialization",
   "HybridQubit_test.py::test_qubit_hamiltonian_lab",
-  "HybridQubit_test.py::test_eigenbasis_normalization"
+  "HybridQubit_test.py::test_eigenbasis_normalization",
+  "NoiseAveraging_test.py::test_noise_doubling",
+  "QMFormulas_test.py::test_eigvector_phase_sort_test",
+  "QMFormulas_test.py::test_gaussian_mean_sd_testing",
+  "QMFormulas_test.py::test_basis_change_real",
+  "QMFormulas_test.py::test_basis_change_imag",
+  "QMFormulas_test.py::test_commutator_pauli"
 ]
