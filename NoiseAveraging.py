@@ -49,23 +49,11 @@ def noise_iteration(noise_samples, tfinal):
 
 def noise_averaging(x, noise_samples, cj_array):
     from scipy.integrate import simps
-    diff_array = np.diff(x)
-    if np.allclose(np.diff(diff_array), np.zeros((len(x) - 2))):
-        # In this case, equal spacing was used for x
-        # allowing a faster trapz implementation
-        # dx = np.mean(diff_array)
-        # norm = np.trapz(noise_samples, dx=dx)
-        norm = simps(noise_samples, x)
-        # matrix_int = np.trapz(np.multiply(cj_array, noise_samples), dx=dx)
-        matrix_int = simps(np.multiply(cj_array, noise_samples), x)
-        return matrix_int / norm
-    else:
-        # We got less lucky, so we'll use the more general method
-        # norm = np.trapz(noise_samples, x=x)
-        norm = simps(noise_samples, x)
-        # matrix_int = np.trapz(np.multiply(cj_array, noise_samples), x=x)
-        matrix_int = simps(np.multiply(cj_array, noise_samples), x)
-        return matrix_int / norm
+    # norm = np.trapz(noise_samples, x=x)
+    norm = simps(noise_samples, x)
+    # matrix_int = np.trapz(np.multiply(cj_array, noise_samples), x=x)
+    matrix_int = simps(np.multiply(cj_array, noise_samples), x)
+    return matrix_int / norm
 
 
 def simple_noise_sampling(tfinal, samples0=15):
@@ -91,14 +79,11 @@ def simple_noise_sampling(tfinal, samples0=15):
         cj_array1[:, :, ::2] = cj_array0
         cj_array1[:, :, 1::2] = cj_array1new
         average_cj1 = noise_averaging(x1full, noise_samples1full, cj_array1)
+        converge_value = np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T))))
         # converge_value = np.sqrt(qmf.processInfidelity(average_cj0, average_cj1))
-        converge_value = np.arccos(np.sqrt(1-qmf.processInfidelity(average_cj0, average_cj1)))
-        print(np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T)))))
-
-        print(converge_value)
+        # converge_value = np.arccos(np.sqrt(1-qmf.processInfidelity(average_cj0, average_cj1)))
 
         samples = len(noise_samples0)
-        print(samples)
 
         x0 = x1full
         noise_samples0 = noise_samples1full
@@ -114,7 +99,6 @@ def bare_time_evolution():
     samples = 31
     for i in range(tsteps):
         cj_average, samples = simple_noise_sampling(trange[i], samples)
-        print(samples)
         cj_time_array[:, :, i] += cj_average
     return trange, cj_time_array
 
