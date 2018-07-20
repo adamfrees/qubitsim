@@ -36,9 +36,16 @@ def test_basis_change_real():
 
 
 def test_basis_change_imag():
-    from math import sqrt
     input_matrix = np.array([[0, 1], [1, 0]], dtype=complex)
     rot_matrix = np.array([[0, -1.j], [1.j, 0]], dtype=complex)
     test_output = np.array([[0, -1], [-1, 0]], dtype=complex)
     output_matrix = QMFormulas.basischange(input_matrix, rot_matrix)
     assert np.allclose(test_output, output_matrix, rtol=1e-8, atol=1e-12)
+
+
+def test_commutator_pauli():
+    pauli_x = np.array([[0, 1], [1, 0]], dtype=complex)
+    pauli_y = np.array([[0, -1.j], [1.j, 0]], dtype=complex)
+    pauli_z = np.array([[1, 0], [0, -1]], dtype=complex)
+    assert np.allclose(2.j * pauli_z, QMFormulas.commutator(pauli_x, pauli_y),
+                       rtol=1e-8, atol=1e-12)
