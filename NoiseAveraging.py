@@ -70,10 +70,7 @@ def simple_noise_sampling(tfinal, samples0=15):
     cj_array0 = noise_iteration(noise_samples0, tfinal)
     average_cj0 = noise_averaging(x0, noise_samples0, cj_array0)
     converge_value = 1.0
-    # converge_test_array = np.zeros((9, 9, 6), dtype=complex)
-    # converge_test_array[:, :, 0] += average_cj0
-    compare_array = average_cj0
-    # test_index = 1
+
     while converge_value > 1e-12:
         x1new, x1full = noise_doubling(x0)
         noise_samples1new = qmf.gaussian(x1new, 0.0, sigma)
@@ -83,28 +80,15 @@ def simple_noise_sampling(tfinal, samples0=15):
         cj_array1[:, :, ::2] = cj_array0
         cj_array1[:, :, 1::2] = cj_array1new
         average_cj1 = noise_averaging(x1full, noise_samples1full, cj_array1)
-        # converge_test_array[:, :, test_index] += average_cj1
-        # for i in range(1, test_index+1):
-        #     print('Infidelity test')
-        #     print(i)
-        #     print(np.sqrt(qmf.processInfidelity(converge_test_array[:, :, 0], converge_test_array[:, :, i])))
-        #     print('\n')
-        # test_index += 1
+        print(qmf.processInfidelity(average_cj0, average_cj1))
         converge_value = np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T))))
-        # print('Frobenius norm: {convalue}'.format(convalue=converge_value))
-        # print('Infidelity from prior step: {infidelity}'.format(infidelity=qmf.processInfidelity(average_cj0, average_cj1)))
-        # print('Unnormalized Infidelity prior step: {unnorm}'.format(unnorm=qmf.processInfidelityUnitary(average_cj0, average_cj1)))
-        # converge_value = np.sqrt(qmf.processInfidelity(average_cj0, average_cj1))
-        # converge_value = np.arccos(np.sqrt(1-qmf.processInfidelity(average_cj0, average_cj1)))
 
         samples = len(noise_samples0)
-        # print('Samples: {}'.format(samples))
 
         x0 = x1full
         noise_samples0 = noise_samples1full
         cj_array0 = cj_array1
         average_cj0 = average_cj1
-    print('Infidelity from starting point: {}'.format(qmf.processInfidelity(compare_array, average_cj1)))
     return average_cj1, samples
 
 
