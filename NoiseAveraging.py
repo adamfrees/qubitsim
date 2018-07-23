@@ -91,10 +91,10 @@ def simple_noise_sampling(tfinal, samples0=15):
         #     print('\n')
         # test_index += 1
         converge_value = np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T))))
-        print('Frobenius norm: {}'.format(converge_value))
-        print('Infidelity from prior step: {}'.format(qmf.processInfidelity(average_cj0, average_cj1)))
-        print('Unnormalized Infidelity prior step: {}'.format(qmf.processInfidelityUnitary(average_cj0, average_cj1)))
-        converge_value = np.sqrt(qmf.processInfidelity(average_cj0, average_cj1))
+        print('Frobenius norm: {convalue}'.format(convalue=converge_value))
+        print('Infidelity from prior step: {infidelity}'.format(infidelity=qmf.processInfidelity(average_cj0, average_cj1)))
+        print('Unnormalized Infidelity prior step: {unnorm}'.format(unnorm=qmf.processInfidelityUnitary(average_cj0, average_cj1)))
+        # converge_value = np.sqrt(qmf.processInfidelity(average_cj0, average_cj1))
         # converge_value = np.arccos(np.sqrt(1-qmf.processInfidelity(average_cj0, average_cj1)))
 
         samples = len(noise_samples0)
@@ -109,10 +109,10 @@ def simple_noise_sampling(tfinal, samples0=15):
 
 
 def bare_time_evolution():
-    tsteps = 40
-    trange = np.linspace(0, 60, tsteps)
+    tsteps = 200
+    trange = np.linspace(0, 5, tsteps)
     cj_time_array = np.zeros((9, 9, tsteps), dtype=complex)
-    samples = 31
+    samples = 101
     for i in range(tsteps):
         print('Time step: {}'.format(i))
         cj_average, samples = simple_noise_sampling(trange[i], samples)
