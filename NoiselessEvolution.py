@@ -23,7 +23,7 @@ if __name__ == '__main__':
     trange = np.linspace(0, 30, tsteps)
     cj_time_array = np.zeros((9, 9, tsteps), dtype=complex)
     for i in range(tsteps):
-        cj_time_array[i] += time_evolution_RF(trange[i])
+        cj_time_array[:, :, i] += time_evolution_RF(trange[i])
     np.save('trange_noiseless_test.npy', trange)
     np.save('cj_array_noiseless_test.npy', cj_time_array)
 
