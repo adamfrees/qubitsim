@@ -38,6 +38,12 @@ def processInfidelity(chiIdeal, chiActual):
     return 1 - trace1 / (trace2 * trace3)
 
 
+def processInfidelityUnitary(chiIdeal, chiActual):
+    """Calculate the process fidelity assuming 
+    unitary processes"""
+    return 1 - np.real(np.trace(chiIdeal @ chiActual))
+
+
 def commutator(A, B):
     """Return the commutator between two equivalently dimensioned 
     matrices A and B"""
