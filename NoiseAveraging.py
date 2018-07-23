@@ -28,11 +28,11 @@ def noise_sample_run(ded, tfinal):
     H0 = qubit.hamiltonian_lab()
     noise = qubit.detuning_noise_lab(ded)
 
-    ChoiSimulation = cj.CJ(indices, H0+noise)
+    ChoiSimulation = cj.CJ(indices, H0, noise)
     if tfinal == 0:
         return ChoiSimulation.chi0
     else:
-        return ChoiSimulation.chi_final(tfinal)
+        return ChoiSimulation.chi_final_RF(tfinal)
 
 
 def noise_iteration(noise_samples, tfinal):
