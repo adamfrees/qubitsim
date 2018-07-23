@@ -70,6 +70,10 @@ def simple_noise_sampling(tfinal, samples0=15):
     cj_array0 = noise_iteration(noise_samples0, tfinal)
     average_cj0 = noise_averaging(x0, noise_samples0, cj_array0)
     converge_value = 1.0
+    # converge_test_array = np.zeros((9, 9, 6), dtype=complex)
+    # converge_test_array[:, :, 0] += average_cj0
+    compare_array = average_cj0
+    # test_index = 1
     while converge_value > 1e-9:
         x1new, x1full = noise_doubling(x0)
         noise_samples1new = qmf.gaussian(x1new, 0.0, sigma)
@@ -79,16 +83,27 @@ def simple_noise_sampling(tfinal, samples0=15):
         cj_array1[:, :, ::2] = cj_array0
         cj_array1[:, :, 1::2] = cj_array1new
         average_cj1 = noise_averaging(x1full, noise_samples1full, cj_array1)
+        # converge_test_array[:, :, test_index] += average_cj1
+        # for i in range(1, test_index+1):
+        #     print('Infidelity test')
+        #     print(i)
+        #     print(np.sqrt(qmf.processInfidelity(converge_test_array[:, :, 0], converge_test_array[:, :, i])))
+        #     print('\n')
+        # test_index += 1
         converge_value = np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T))))
-        # converge_value = np.sqrt(qmf.processInfidelity(average_cj0, average_cj1))
+        print('Frobenius norm: {}'.format(converge_value))
+        print('Infidelity from prior step: {}'.format(qmf.processInfidelity(average_cj0, average_cj1)))
+        converge_value = np.sqrt(qmf.processInfidelity(average_cj0, average_cj1))
         # converge_value = np.arccos(np.sqrt(1-qmf.processInfidelity(average_cj0, average_cj1)))
 
         samples = len(noise_samples0)
+        print('Samples: {}'.format(samples))
 
         x0 = x1full
         noise_samples0 = noise_samples1full
         cj_array0 = cj_array1
         average_cj0 = average_cj1
+    print('Infidelity from starting point: {}'.format(qmf.processInfidelity(compare_array, average_cj1)))
     return average_cj1, samples
 
 
@@ -98,6 +113,7 @@ def bare_time_evolution():
     cj_time_array = np.zeros((9, 9, tsteps), dtype=complex)
     samples = 31
     for i in range(tsteps):
+        print('Time step: {}'.format(i))
         cj_average, samples = simple_noise_sampling(trange[i], samples)
         cj_time_array[:, :, i] += cj_average
     return trange, cj_time_array
