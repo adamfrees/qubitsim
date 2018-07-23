@@ -93,6 +93,7 @@ def simple_noise_sampling(tfinal, samples0=15):
         converge_value = np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T))))
         print('Frobenius norm: {}'.format(converge_value))
         print('Infidelity from prior step: {}'.format(qmf.processInfidelity(average_cj0, average_cj1)))
+        print('Unnormalized Infidelity prior step: {}'.format(qmf.processInfidelityUnitary(average_cj0, average_cj1)))
         converge_value = np.sqrt(qmf.processInfidelity(average_cj0, average_cj1))
         # converge_value = np.arccos(np.sqrt(1-qmf.processInfidelity(average_cj0, average_cj1)))
 
