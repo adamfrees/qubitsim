@@ -21,7 +21,7 @@ def noise_doubling(original):
 def noise_sample_run(ded, tfinal):
     """Run a single noise sample at noise point ded (GHz)
     and at time tfinal"""
-    operating_point = 4.0
+    operating_point = 5.0
     match_freq = 10.0
     indices = [0, 1]
     qubit = hybrid.SOSSHybrid(operating_point, match_freq)
@@ -74,7 +74,7 @@ def simple_noise_sampling(tfinal, samples0=15):
     # converge_test_array[:, :, 0] += average_cj0
     compare_array = average_cj0
     # test_index = 1
-    while converge_value > 1e-9:
+    while converge_value > 1e-12:
         x1new, x1full = noise_doubling(x0)
         noise_samples1new = qmf.gaussian(x1new, 0.0, sigma)
         noise_samples1full = qmf.gaussian(x1full, 0.0, sigma)
@@ -91,14 +91,14 @@ def simple_noise_sampling(tfinal, samples0=15):
         #     print('\n')
         # test_index += 1
         converge_value = np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T))))
-        print('Frobenius norm: {convalue}'.format(convalue=converge_value))
-        print('Infidelity from prior step: {infidelity}'.format(infidelity=qmf.processInfidelity(average_cj0, average_cj1)))
-        print('Unnormalized Infidelity prior step: {unnorm}'.format(unnorm=qmf.processInfidelityUnitary(average_cj0, average_cj1)))
+        # print('Frobenius norm: {convalue}'.format(convalue=converge_value))
+        # print('Infidelity from prior step: {infidelity}'.format(infidelity=qmf.processInfidelity(average_cj0, average_cj1)))
+        # print('Unnormalized Infidelity prior step: {unnorm}'.format(unnorm=qmf.processInfidelityUnitary(average_cj0, average_cj1)))
         # converge_value = np.sqrt(qmf.processInfidelity(average_cj0, average_cj1))
         # converge_value = np.arccos(np.sqrt(1-qmf.processInfidelity(average_cj0, average_cj1)))
 
         samples = len(noise_samples0)
-        print('Samples: {}'.format(samples))
+        # print('Samples: {}'.format(samples))
 
         x0 = x1full
         noise_samples0 = noise_samples1full
@@ -109,10 +109,10 @@ def simple_noise_sampling(tfinal, samples0=15):
 
 
 def bare_time_evolution():
-    tsteps = 200
-    trange = np.linspace(0, 5, tsteps)
+    tsteps = 100
+    trange = np.linspace(0, 30, tsteps)
     cj_time_array = np.zeros((9, 9, tsteps), dtype=complex)
-    samples = 101
+    samples = 81
     for i in range(tsteps):
         print('Time step: {}'.format(i))
         cj_average, samples = simple_noise_sampling(trange[i], samples)
