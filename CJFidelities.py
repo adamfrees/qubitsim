@@ -11,7 +11,7 @@ class CJ (object):
     of state evolution. This is equivalent to the chi-matrix
     for the evolution
     """
-    def __init__(self, indices, hamiltonian):
+    def __init__(self, indices, hamiltonian, noise_hamiltonian):
         """
         Initialize a Choi-Jamilkowski instance with the subspace
         of interest given by indices, and the kernel of the unitary
@@ -26,6 +26,7 @@ class CJ (object):
         chi0[np.ix_(converted_indices, converted_indices)] = norm
         self.chi0 = chi0
         self.kernel = np.kron(np.identity(dim), hamiltonian)
+        self.noise = np.kron(np.identity(dim), noise_hamiltonian)
 
     def chi_final(self, tfinal):
         """
@@ -34,8 +35,20 @@ class CJ (object):
         if tfinal == 0.0:
             return self.chi0
         else:
-            unitary = LA.expm(-1j*tfinal*self.kernel)
+            unitary = LA.expm(-1j*tfinal*(self.kernel + self.noise))
             return unitary @ self.chi0 @ unitary.conj().T
+            
+    def chi_final_RF(self, tfinal):
+        """
+        Find the chi_matrix in the rotating frame defined by the deliberate
+        rotation
+        """
+        if tfinal == 0.0:
+            return self.chi0
+        else:
+            unitary_operation = LA.expm(-1j * tfinal*(self.kernel + self.noise))
+            unitary_rotation = LA.expm(1j * tfinal * self.kernel)
+            return unitary_rotation @ (unitary_operation @ self.chi0 @ unitary_operation.conj().T) @ unitary_rotation.conj().T
 
     def infidelity(self, tfinal):
         """
