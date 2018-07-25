@@ -149,6 +149,6 @@ class SOSSHybrid(HybridQubit):
 
         stsplitting = (matchfreq / 10.0) * stsplitting_f(ed_ratio)
         ed = stsplitting * ed_ratio
-        delta1 = stsplitting * delta1_f(ed_ratio)
-        delta2 = stsplitting * delta2_f(ed_ratio)
+        delta1 = delta1_f(ed_ratio)
+        delta2 = delta2_f(ed_ratio)
         super().__init__(ed, stsplitting, delta1, delta2)
