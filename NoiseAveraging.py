@@ -104,6 +104,28 @@ def bare_time_evolution():
     return trange, cj_time_array
 
 
+def choosing_final_time(qubit, sigma):
+    """ Function to make a guess at the final time required 
+    for estimating decoherence"""
+    h = 1e-3
+    coeff_array1 = np.array([1/12, -2/3, 0, 2/3, -1/12])
+    coeff_array2 = np.array([-1/12, 4/3, -5/2, 4/3, -1/12])
+    coeff_array3 = np.array([-1/2, 1, 0, -1, 1/2])
+
+    ed = qubit.ed
+    stsplitting = qubit.stsplitting
+    delta1 = qubit.delta1
+    delta2 = qubit.delta2
+
+    qsm2 = hybrid.HybridQubit(ed - 2*h, stsplitting, delta1, delta2).qubit_splitting()
+    qsm1 = hybrid.HybridQubit(ed - h, stsplitting, delta1, delta2).qubit_splitting()
+    qsp1 = hybrid.HybridQubit(ed + h, stsplitting, delta1, delta2).qubit_splitting()
+    qsp2 = hybrid.HybridQubit(ed + 2*h, stsplitting, delta1, delta2).qubit_splitting()
+
+    sample_array = np.array([qsm2, qsm1, qubit.qubit_splitting(), qsp1, qsp2]) / (2*math.pi)
+    return None
+
+
 if __name__ == '__main__':
     trange, cj_time_array = bare_time_evolution()
     np.save('trange_test.npy', trange)
