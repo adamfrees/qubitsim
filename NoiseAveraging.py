@@ -107,7 +107,7 @@ def bare_time_evolution():
 def choosing_final_time(qubit, sigma):
     """ Function to make a guess at the final time required 
     for estimating decoherence"""
-    planck = 4.135667662e−9
+    planck = 4.135667662e-9
     h = 1e-3
     coeff_array1 = np.array([1/12, -2/3, 0, 2/3, -1/12])
     coeff_array2 = np.array([-1/12, 4/3, -5/2, 4/3, -1/12])
