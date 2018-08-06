@@ -107,6 +107,7 @@ def bare_time_evolution():
 def choosing_final_time(qubit, sigma):
     """ Function to make a guess at the final time required 
     for estimating decoherence"""
+    planck = 4.135667662e−9
     h = 1e-3
     coeff_array1 = np.array([1/12, -2/3, 0, 2/3, -1/12])
     coeff_array2 = np.array([-1/12, 4/3, -5/2, 4/3, -1/12])
@@ -123,7 +124,15 @@ def choosing_final_time(qubit, sigma):
     qsp2 = hybrid.HybridQubit(ed + 2*h, stsplitting, delta1, delta2).qubit_splitting()
 
     sample_array = np.array([qsm2, qsm1, qubit.qubit_splitting(), qsp1, qsp2]) / (2*math.pi)
-    return None
+
+    deriv1 = np.abs(np.dot(sample_array, coeff_array1))
+    deriv2 = np.abs(np.dot(sample_array, coeff_array2))
+    deriv3 = np.abs(np.dot(sample_array, coeff_array3))
+
+    T21 = (deriv1*sigma) / (math.sqrt(2) * h)
+    T22 = (deriv2 * sigma**2) / (math.sqrt(2) * h**2)
+    T23 = (deriv3 * sigma**3) / (math.sqrt(2) * h**3)
+    return np.array([T21, T22, T23])
 
 
 if __name__ == '__main__':
