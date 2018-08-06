@@ -129,9 +129,9 @@ def choosing_final_time(qubit, sigma):
     deriv2 = np.abs(np.dot(sample_array, coeff_array2))
     deriv3 = np.abs(np.dot(sample_array, coeff_array3))
 
-    T21 = (deriv1*sigma) / (math.sqrt(2) * h)
-    T22 = (deriv2 * sigma**2) / (math.sqrt(2) * h**2)
-    T23 = (deriv3 * sigma**3) / (math.sqrt(2) * h**3)
+    T21 = (deriv1*sigma) / (math.sqrt(2) * planck)
+    T22 = (deriv2 * sigma**2) / (math.sqrt(2) * planck**2)
+    T23 = (deriv3 * sigma**3) / (math.sqrt(2) * planck**3)
     return np.array([T21, T22, T23])
 
 
