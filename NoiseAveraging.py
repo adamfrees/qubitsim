@@ -9,6 +9,13 @@ import HybridQubit as hybrid
 import CJFidelities as cj
 
 
+def even_area_sampling(samples, sigma):
+    from scipy.special import erfinv
+    sample_array = 2 * np.arange(0, (samples-1)/2, 1) / (samples-1)
+    output_array = erfinv(sample_array)
+    return_array = np.unique(np.hstack((output_array, -output_array, [0])))
+    return return_array / (math.sqrt(2) * sigma)
+
 def noise_doubling(original):
     """Bisect an original sample given"""
     new_samples = 0.5 * np.diff(original) + original[:-1]
