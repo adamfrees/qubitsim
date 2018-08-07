@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 import HybridQubit as hybrid
 
-def centered_difference():
+def centered_difference_ed():
     coeff1 = np.array([-1/60, 3/20, -3/4, 0, 3/4, -3/20, 1/60])
     coeff2 = np.array([1/90, -3/20, 3/2, -49/18, 3/2, -3/20, 1/90])
     coeff3 = np.array([1/8, -1, 13/8, 0, -13/8, 1, -1/8])
