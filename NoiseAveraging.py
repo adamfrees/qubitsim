@@ -10,11 +10,12 @@ import CJFidelities as cj
 
 
 def even_area_sampling(samples, sigma):
-    from scipy.special import erfinv
-    sample_array = 2 * np.arange(0, (samples-1)/2, 1) / (samples-1)
-    output_array = erfinv(sample_array)
-    return_array = np.unique(np.hstack((output_array, -output_array, [0])))
-    return return_array / (math.sqrt(2) * sigma)
+    """Use the percentile point function of the normal distribution 
+    to return the sample points that represent equal area subdivisions
+    underneath a gaussian distribution with mean=0 and sigma=sigma"""
+    from scipy.stats import norm
+    samples = norm.ppf(np.linspace(0, 1, samples), 0.0, sigma)
+    return samples[1:-1]
 
 def noise_doubling(original):
     """Bisect an original sample given"""
