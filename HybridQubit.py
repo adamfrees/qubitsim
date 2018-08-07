@@ -129,6 +129,13 @@ class HybridQubit(object):
         return np.diag([-0.5*ded, -0.5*ded, 0.5*ded])
 
 
+    def dipole_operator_qubit(self):
+        """return the full dipole operator for the 
+        quantum dot hybrid qubit"""
+        base_operator = 0.5 * np.diag([-1, -1, 1])
+        return self.qubit_basis() @ base_operator @ self.qubit_basis().conj().T
+
+
 class SOSSHybrid(HybridQubit):
     """Return a hybrid qubit object that is at a second order sweet spot
     resonant at some given frequency"""
