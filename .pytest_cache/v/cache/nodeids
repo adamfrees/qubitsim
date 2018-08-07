@@ -8,5 +8,9 @@
   "QMFormulas_test.py::test_gaussian_mean_sd_testing",
   "QMFormulas_test.py::test_basis_change_real",
   "QMFormulas_test.py::test_basis_change_imag",
-  "QMFormulas_test.py::test_commutator_pauli"
+  "QMFormulas_test.py::test_commutator_pauli",
+  "Resonator_test.py::test_number_operator",
+  "Resonator_test.py::test_creation_operator",
+  "Resonator_test.py::test_annihilation_operator",
+  "Resonator_test.py::test_commutation_relation_creation_annihilation"
 ]
