@@ -3,6 +3,7 @@
   "HybridQubit_test.py::test_qubit_hamiltonian_lab",
   "HybridQubit_test.py::test_eigenbasis_normalization",
   "NoiseAveraging_test.py::test_noise_doubling",
+  "NoiseAveraging_test.py::test_even_area_sampling",
   "QMFormulas_test.py::test_eigvector_phase_sort_test",
   "QMFormulas_test.py::test_gaussian_mean_sd_testing",
   "QMFormulas_test.py::test_basis_change_real",
