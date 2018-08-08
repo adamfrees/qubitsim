@@ -28,14 +28,22 @@ def basischange(rho0, U):
     return U @ rho0 @ U.conj().T
 
 
-def processInfidelity(chiIdeal, chiActual):
-    """Calculate the process fielity between two 
-    matrices chiIdeal and chiActual. chiIdeal and 
-    chiActual are not assumed to be unitary processes."""
+def processFidelity(chiIdeal, chiActual):
+    """Calculate the process fidelity between 
+    two process matrices chiIdeal and chiActual. 
+    chiIdeal and chiActual are not assumed to be unitary 
+    processes"""
     trace1 = np.real(np.trace(chiIdeal @ chiActual))
     trace2 = np.real(np.trace(chiIdeal))
     trace3 = np.real(np.trace(chiActual))
-    return 1 - trace1 / (trace2 * trace3)
+    return trace1 / (trace2 * trace3)
+
+
+def processInfidelity(chiIdeal, chiActual):
+    """Calculate the process infidelity between two 
+    matrices chiIdeal and chiActual. chiIdeal and 
+    chiActual are not assumed to be unitary processes."""
+    return 1 - processFidelity(chiIdeal, chiActual)
 
 
 def processInfidelityUnitary(chiIdeal, chiActual):
