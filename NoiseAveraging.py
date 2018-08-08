@@ -29,7 +29,7 @@ def noise_doubling(original):
 def noise_sample_run(ded, tfinal):
     """Run a single noise sample at noise point ded (GHz)
     and at time tfinal"""
-    operating_point = 5.0
+    operating_point = 3.0
     match_freq = 10.0
     indices = [0, 1]
     qubit = hybrid.SOSSHybrid(operating_point, match_freq)
