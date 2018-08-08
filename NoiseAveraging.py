@@ -134,6 +134,18 @@ def even_area_noise_sampling(tfinal, samples0=21):
     return average_cj1, samples0
 
 
+def bare_time_evolution():
+    tsteps = 100
+    trange = np.linspace(0, 30, tsteps)
+    cj_time_array = np.zeros((9, 9, tsteps), dtype=complex)
+    samples = 11
+    for i in range(tsteps):
+        print('Time step: {}'.format(i))
+        cj_average, samples = even_area_noise_sampling(trange[i], samples)
+        cj_time_array[:, :, i] += cj_average
+    return trange, cj_time_array
+
+
 def choosing_final_time(qubit, sigma):
     """ Function to make a guess at the final time required 
     for estimating decoherence"""
