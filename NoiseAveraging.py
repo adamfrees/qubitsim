@@ -74,15 +74,15 @@ def simple_noise_sampling(tfinal, samples0=15):
     sigma = 5.0 * ueV_conversion
     x0 = np.linspace(-5 * sigma, 5*sigma, samples0)
     noise_samples0 = qmf.gaussian(x0, 0.0, sigma)
-    cj_array0 = noise_iteration(noise_samples0, tfinal)
+    cj_array0 = noise_iteration(x0, tfinal)
     average_cj0 = noise_averaging(x0, noise_samples0, cj_array0)
     converge_value = 1.0
 
     while converge_value > 1e-7:
         x1new, x1full = noise_doubling(x0)
-        noise_samples1new = qmf.gaussian(x1new, 0.0, sigma)
+        # noise_samples1new = qmf.gaussian(x1new, 0.0, sigma)
         noise_samples1full = qmf.gaussian(x1full, 0.0, sigma)
-        cj_array1new = noise_iteration(noise_samples1new, tfinal)
+        cj_array1new = noise_iteration(x1new, tfinal)
         cj_array1 = np.zeros((9, 9, len(x1full)), dtype=complex)
         cj_array1[:, :, ::2] = cj_array0
         cj_array1[:, :, 1::2] = cj_array1new
@@ -112,7 +112,7 @@ def even_area_noise_sampling(tfinal, samples0=21):
     sigma = 5.0 * ueV_conversion
     x0 = even_area_sampling(samples0, sigma)
     noise_samples0 = qmf.gaussian(x0, 0.0, sigma)
-    cj_array0 = noise_iteration(noise_samples0, tfinal)
+    cj_array0 = noise_iteration(x0, tfinal)
     average_cj0 = noise_averaging(x0, noise_samples0, cj_array0)
     static_start_cj0 = average_cj0
     converge_value = 1.0
@@ -120,7 +120,7 @@ def even_area_noise_sampling(tfinal, samples0=21):
     while converge_value > 1e-12:
         x1 = even_area_sampling(samples0+10, sigma)
         noise_samples1 = qmf.gaussian(x1, 0.0, sigma)
-        cj_array1 = noise_iteration(noise_samples1, tfinal)
+        cj_array1 = noise_iteration(x1, tfinal)
         average_cj1 = noise_averaging(x1, noise_samples1, cj_array1)
         print(samples0)
         print(qmf.processInfidelity(static_start_cj0, average_cj1))
@@ -141,7 +141,7 @@ def bare_time_evolution():
     samples = 11
     for i in range(tsteps):
         print('Time step: {}'.format(i))
-        cj_average, samples = even_area_noise_sampling(trange[i], samples)
+        cj_average, samples = simple_noise_sampling(trange[i], samples)
         cj_time_array[:, :, i] += cj_average
     return trange, cj_time_array
 
