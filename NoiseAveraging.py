@@ -89,7 +89,8 @@ def simple_noise_sampling(tfinal, samples0=15):
         cj_array1[:, :, 1::2] = cj_array1new
         average_cj1 = noise_averaging(x1full, noise_samples1full, cj_array1)
         print(qmf.processInfidelity(average_cj0, average_cj1))
-        converge_value = np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T))))
+        # converge_value = np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T))))
+        converge_value = qmf.processInfidelity(average_cj0, average_cj1)
 
         samples = len(noise_samples0)
 
@@ -98,6 +99,39 @@ def simple_noise_sampling(tfinal, samples0=15):
         cj_array0 = cj_array1
         average_cj0 = average_cj1
     return average_cj1, samples
+
+
+def even_area_noise_sampling(tfinal, samples0=20):
+    """
+    This algorithm will start with
+    a coarse noise sample and will progressively 
+    refine the sample until convergence is found
+    """
+    from scipy.linalg import sqrtm
+    ueV_conversion = 0.241799050402417
+    sigma = 5.0 * ueV_conversion
+    x0 = even_area_sampling(samples0, sigma)
+    noise_samples0 = qmf.gaussian(x0, 0.0, sigma)
+    cj_array0 = noise_iteration(noise_samples0, tfinal)
+    average_cj0 = noise_averaging(x0, noise_samples0, cj_array0)
+    static_start_cj0 = average_cj0
+    converge_value = 1.0
+
+    while converge_value > 1e-12:
+        x1 = even_area_sampling(samples0+10, sigma)
+        noise_samples1 = qmf.gaussian(x1, 0.0, sigma)
+        cj_array1 = noise_iteration(noise_samples1, tfinal)
+        average_cj1 = noise_averaging(x1, noise_samples1, cj_array1)
+        print(samples0)
+        print(qmf.processInfidelity(static_start_cj0, average_cj1))
+        # converge_value = np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T))))
+        converge_value = qmf.processInfidelity(average_cj0, average_cj1)
+
+        # samples = len(noise_samples0)
+
+        samples0 += 40
+        average_cj0 = average_cj1
+    return average_cj1, samples0
 
 
 def bare_time_evolution():
