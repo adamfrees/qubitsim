@@ -72,21 +72,20 @@ def simple_noise_sampling(tfinal, samples0=15):
     """
     ueV_conversion = 0.241799050402417
     sigma = 5.0 * ueV_conversion
-    x0 = np.linspace(-5 * sigma, 5*sigma, samples0)
-    noise_samples0 = qmf.gaussian(x0, 0.0, sigma)
-    cj_array0 = noise_iteration(x0, tfinal)
-    average_cj0 = noise_averaging(x0, noise_samples0, cj_array0)
+    noise_samples0 = np.linspace(-5 * sigma, 5*sigma, samples0)
+    noise_weights0 = qmf.gaussian(noise_samples0, 0.0, sigma)
+    cj_array0 = noise_iteration(noise_samples0, tfinal)
+    average_cj0 = noise_averaging(noise_samples0, noise_weights0, cj_array0)
     converge_value = 1.0
 
-    while converge_value > 1e-7:
-        x1new, x1full = noise_doubling(x0)
-        # noise_samples1new = qmf.gaussian(x1new, 0.0, sigma)
-        noise_samples1full = qmf.gaussian(x1full, 0.0, sigma)
-        cj_array1new = noise_iteration(x1new, tfinal)
-        cj_array1 = np.zeros((9, 9, len(x1full)), dtype=complex)
+    while converge_value > 1e-9:
+        noise_samples1_new, noise_samples1 = noise_doubling(noise_samples0)
+        noise_weights1 = qmf.gaussian(noise_samples1, 0.0, sigma)
+        cj_array1_new = noise_iteration(noise_samples1_new, tfinal)
+        cj_array1 = np.zeros((9, 9, len(noise_samples1)), dtype=complex)
         cj_array1[:, :, ::2] = cj_array0
-        cj_array1[:, :, 1::2] = cj_array1new
-        average_cj1 = noise_averaging(x1full, noise_samples1full, cj_array1)
+        cj_array1[:, :, 1::2] = cj_array1_new
+        average_cj1 = noise_averaging(noise_samples1, noise_weights1, cj_array1)
         # print(qmf.processInfidelity(average_cj0, average_cj1))
         # converge_value = np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T))))
         converge_value = qmf.processInfidelity(average_cj0, average_cj1)
@@ -94,8 +93,7 @@ def simple_noise_sampling(tfinal, samples0=15):
 
         samples = len(noise_samples0)
 
-        x0 = x1full
-        noise_samples0 = noise_samples1full
+        noise_samples0 = noise_samples1
         cj_array0 = cj_array1
         average_cj0 = average_cj1
     return average_cj1, samples
@@ -110,24 +108,22 @@ def even_area_noise_sampling(tfinal, samples0=21):
     from scipy.linalg import sqrtm
     ueV_conversion = 0.241799050402417
     sigma = 5.0 * ueV_conversion
-    x0 = even_area_sampling(samples0, sigma)
-    noise_samples0 = qmf.gaussian(x0, 0.0, sigma)
-    cj_array0 = noise_iteration(x0, tfinal)
-    average_cj0 = noise_averaging(x0, noise_samples0, cj_array0)
+    noise_samples0 = even_area_sampling(samples0, sigma)
+    noise_weights0 = qmf.gaussian(x0, 0.0, sigma)
+    cj_array0 = noise_iteration(noise_samples0, tfinal)
+    average_cj0 = noise_averaging(noise_samples0, noise_weights0, cj_array0)
     static_start_cj0 = average_cj0
     converge_value = 1.0
 
     while converge_value > 1e-12:
-        x1 = even_area_sampling(samples0+10, sigma)
-        noise_samples1 = qmf.gaussian(x1, 0.0, sigma)
-        cj_array1 = noise_iteration(x1, tfinal)
-        average_cj1 = noise_averaging(x1, noise_samples1, cj_array1)
+        noise_samples1 = even_area_sampling(samples0+10, sigma)
+        noise_weights1 = qmf.gaussian(noise_samples1, 0.0, sigma)
+        cj_array1 = noise_iteration(noise_samples1, tfinal)
+        average_cj1 = noise_averaging(noise_samples1, noise_weights1, cj_array1)
         print(samples0)
         print(qmf.processInfidelity(static_start_cj0, average_cj1))
         # converge_value = np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T))))
         converge_value = qmf.processInfidelity(average_cj0, average_cj1)
-
-        # samples = len(noise_samples0)
 
         samples0 += 40
         average_cj0 = average_cj1
