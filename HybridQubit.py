@@ -136,7 +136,7 @@ class HybridQubit(object):
         return self.qubit_basis() @ base_operator @ self.qubit_basis().conj().T
 
 
-    def derivative_spectrum(self, order):
+    def splitting_derivative(self, order):
         step = 5e-3
 
         qm3 = HybridQubit(self.ed - 3 * step, self.stsplitting,
