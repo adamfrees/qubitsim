@@ -133,7 +133,7 @@ class HybridQubit(object):
         """return the full dipole operator for the 
         quantum dot hybrid qubit"""
         base_operator = 0.5 * np.diag([-1, -1, 1])
-        return self.qubit_basis() @ base_operator @ self.qubit_basis().conj().T
+        return self.qubit_basis().T @ base_operator @ self.qubit_basis()
 
 
     def splitting_derivative(self, order):
