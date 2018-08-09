@@ -137,6 +137,13 @@ class HybridQubit(object):
 
 
     def splitting_derivative(self, order):
+        """Calculate the nth-derivative of the qubit 
+        splitting in GHz.
+        Inputs:
+          order: order of the derivative
+        Outputs:
+          d^n / d omega^n in (GHz^-(n-1))
+        """
         step = 5e-3
 
         qm3 = HybridQubit(self.ed - 3 * step, self.stsplitting,
