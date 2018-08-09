@@ -1,16 +1,4 @@
 [
-  "HybridQubit_test.py::test_qubit_initialization",
-  "HybridQubit_test.py::test_qubit_hamiltonian_lab",
-  "HybridQubit_test.py::test_eigenbasis_normalization",
-  "NoiseAveraging_test.py::test_noise_doubling",
-  "NoiseAveraging_test.py::test_even_area_sampling",
-  "QMFormulas_test.py::test_eigvector_phase_sort_test",
-  "QMFormulas_test.py::test_gaussian_mean_sd_testing",
-  "QMFormulas_test.py::test_basis_change_real",
-  "QMFormulas_test.py::test_basis_change_imag",
-  "QMFormulas_test.py::test_commutator_pauli",
-  "Resonator_test.py::test_number_operator",
-  "Resonator_test.py::test_creation_operator",
-  "Resonator_test.py::test_annihilation_operator",
-  "Resonator_test.py::test_commutation_relation_creation_annihilation"
+  "CJFidelities_test.py::test_dimension_chi0",
+  "CJFidelities_test.py::test_chi0_initiliazation"
 ]
