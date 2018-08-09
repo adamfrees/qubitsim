@@ -136,6 +136,43 @@ class HybridQubit(object):
         return self.qubit_basis() @ base_operator @ self.qubit_basis().conj().T
 
 
+    def derivative_spectrum(self, order):
+        step = 5e-3
+
+        qm3 = HybridQubit(self.ed - 3 * step, self.stsplitting,
+                          self.delta1, self.delta2)
+        qm2 = HybridQubit(self.ed - 2 * step, self.stsplitting,
+                          self.delta1, self.delta2)
+        qm1 = HybridQubit(self.ed - 1 * step, self.stsplitting,
+                          self.delta1, self.delta2)
+        qp1 = HybridQubit(self.ed + 1 * step, self.stsplitting,
+                          self.delta1, self.delta2)
+        qp2 = HybridQubit(self.ed + 2 * step, self.stsplitting,
+                          self.delta1, self.delta2)
+        qp3 = HybridQubit(self.ed + 3 * step, self.stsplitting,
+                          self.delta1, self.delta2)
+
+        splitting_array = np.array([qm3.qubit_splitting(), qm2.qubit_splitting(),
+                                    qm1.qubit_splitting(),
+                                    self.qubit_splitting(),
+                                    qp1.qubit_splitting(),
+                                    qp2.qubit_splitting(), qp3.qubit_splitting()]) / (2*math.pi)
+        if order == 1:
+            step = 5e-3
+            coeff_list = np.array([-1/60, 3/20, -3/4, 0, 3/4, -3/20, 1/60])
+        elif order == 2:
+            step = 5e-3
+            coeff_list = np.array([1/90, -3/20, 3/2, -49/18, 3/2, -3/20, 1/90])
+        elif order == 3:
+            step = 5e-3
+            coeff_list = np.array([1/8, -1, 13/8, 0, -13/8, 1, -1/8])
+        else:
+            pass
+        
+        return np.dot(splitting_array, coeff_list) / (step ** order)
+
+
+
 class SOSSHybrid(HybridQubit):
     """Return a hybrid qubit object that is at a second order sweet spot
     resonant at some given frequency"""
