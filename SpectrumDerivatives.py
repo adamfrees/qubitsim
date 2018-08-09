@@ -29,7 +29,6 @@ def centered_difference_ed():
 
     ueV_conversion = 0.241799050402417
     sigma = 5.0 * ueV_conversion
-    planck = 4.135667662e-9
 
     deriv1_array = np.zeros((100))
     deriv2_array = np.zeros((100))
