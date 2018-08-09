@@ -90,6 +90,10 @@ def simple_noise_sampling(tfinal, samples0):
         # converge_value = np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T))))
         converge_value = qmf.processInfidelity(average_cj0, average_cj1)
 
+        print(qmf.processInfidelity(average_cj0, average_cj0))
+        print(qmf.processInfidelity(average_cj1, average_cj1))
+
+
         print('-------')
         print(average_cj0[0, 1])
         print(average_cj1[0, 1])
