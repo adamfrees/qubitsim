@@ -49,13 +49,3 @@ class CJ (object):
             unitary_operation = LA.expm(-1j * tfinal*(self.kernel + self.noise))
             unitary_rotation = LA.expm(1j * tfinal * self.kernel)
             return unitary_rotation @ (unitary_operation @ self.chi0 @ unitary_operation.conj().T) @ unitary_rotation.conj().T
-
-    def infidelity(self, tfinal):
-        """
-        Calculate the infidelity of the operation being characterized.
-        """
-        chi_f = self.chi_final(tfinal)
-        trace1 = np.real(np.trace(self.chi0 @ chi_f))
-        trace2 = np.real(np.trace(chi_f))
-        trace3 = np.real(np.trace(self.chi0))
-        return 1 - trace1 / (trace2 * trace3)
