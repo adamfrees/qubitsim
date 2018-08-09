@@ -64,7 +64,7 @@ def noise_averaging(x, noise_samples, cj_array):
     return matrix_int / norm
 
 
-def simple_noise_sampling(tfinal, samples0=15):
+def simple_noise_sampling(tfinal, samples0):
     """
     This algorithm will start with
     a coarse noise sample and will progressively 
@@ -83,19 +83,23 @@ def simple_noise_sampling(tfinal, samples0=15):
         noise_weights1 = qmf.gaussian(noise_samples1, 0.0, sigma)
         cj_array1_new = noise_iteration(noise_samples1_new, tfinal)
         cj_array1 = np.zeros((9, 9, len(noise_samples1)), dtype=complex)
-        cj_array1[:, :, ::2] = cj_array0
-        cj_array1[:, :, 1::2] = cj_array1_new
+        cj_array1[:, :, ::2] += cj_array0
+        cj_array1[:, :, 1::2] += cj_array1_new
         average_cj1 = noise_averaging(noise_samples1, noise_weights1, cj_array1)
         # print(qmf.processInfidelity(average_cj0, average_cj1))
         # converge_value = np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T))))
         converge_value = qmf.processInfidelity(average_cj0, average_cj1)
-        print(qmf.processInfidelity(average_cj0, average_cj1))
 
+        print('-------')
+        print(average_cj0[0, 1])
+        print(average_cj1[0, 1])
+        print('-------')
         samples = len(noise_samples0)
 
-        noise_samples0 = noise_samples1
-        cj_array0 = cj_array1
-        average_cj0 = average_cj1
+        noise_samples0 = np.copy(noise_samples1)
+        cj_array0 = np.copy(cj_array1)
+        average_cj0 = np.copy(average_cj1)
+
     return average_cj1, samples
 
 
@@ -132,7 +136,7 @@ def even_area_noise_sampling(tfinal, samples0=21):
 
 def bare_time_evolution():
     tsteps = 100
-    trange = np.linspace(0, 30, tsteps)
+    trange = np.linspace(0, 300, tsteps)
     cj_time_array = np.zeros((9, 9, tsteps), dtype=complex)
     samples = 11
     for i in range(tsteps):
