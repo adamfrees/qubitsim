@@ -12,13 +12,24 @@ def centered_difference_ed():
     coeff2 = np.array([1/90, -3/20, 3/2, -49/18, 3/2, -3/20, 1/90])
     coeff3 = np.array([1/8, -1, 13/8, 0, -13/8, 1, -1/8])
 
-    h_test_array = np.logspace(-8, -1, 100)
+    h_test_array = np.logspace(-4, -1, 100)
 
-    base_qubit = hybrid.SOSSHybrid(0.5, 10.0)
+    base_qubit = hybrid.SOSSHybrid(4.5, 10.0)
+    # base_qubit = hybrid.HybridQubit(2.5 * 10.0, 10.0, 0.4, 0.65)
     ed_base = base_qubit.ed
     stsplitting_base = base_qubit.stsplitting
     delta1_base = base_qubit.delta1
     delta2_base = base_qubit.delta2
+
+    base_qubit = hybrid.HybridQubit(ed_base, stsplitting_base, 0.99*delta1_base, delta2_base)
+    ed_base = base_qubit.ed
+    stsplitting_base = base_qubit.stsplitting
+    delta1_base = base_qubit.delta1
+    delta2_base = base_qubit.delta2
+
+    ueV_conversion = 0.241799050402417
+    sigma = 5.0 * ueV_conversion
+    planck = 4.135667662e-9
 
     deriv1_array = np.zeros((100))
     deriv2_array = np.zeros((100))
@@ -39,14 +50,14 @@ def centered_difference_ed():
                                     qp1.qubit_splitting(),
                                     qp2.qubit_splitting(), qp3.qubit_splitting()]) / (2*math.pi)
         
-        deriv1_array[i] = np.dot(splitting_array, coeff1)
-        deriv2_array[i] = np.dot(splitting_array, coeff2)
-        deriv3_array[i] = np.dot(splitting_array, coeff3)
+        deriv1_array[i] = np.dot(splitting_array, coeff1) / h
+        deriv2_array[i] = np.dot(splitting_array, coeff2) / h**2
+        deriv3_array[i] = np.dot(splitting_array, coeff3) / h**3
 
     fig, ax = plt.subplots()
-    ax.loglog(h_test_array, np.abs(deriv1_array))
-    ax.loglog(h_test_array, np.abs(deriv2_array))
-    ax.loglog(h_test_array, np.abs(deriv3_array))
+    ax.loglog(h_test_array, np.power(sigma * np.abs(deriv1_array), -1))
+    ax.loglog(h_test_array, np.power(sigma**2 * np.abs(deriv2_array), -1))
+    ax.loglog(h_test_array, np.power(sigma**3 * np.abs(deriv3_array), -1))
     ax.set_xlabel(r'step size, $h$')
     plt.show()
 
