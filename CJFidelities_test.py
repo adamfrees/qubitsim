@@ -1,6 +1,7 @@
 # Test suite for CJ fidelity calculations
 
 import pytest
+import math
 import numpy as np
 
 import CJFidelities as CJ
@@ -40,3 +41,17 @@ def test_kernel_basic():
                             [0, 0, 0, 1],
                             [0, 0, 1, 0]])
     assert np.array_equal(kernel_from_class, test_kernel)
+
+
+def test_basic_evolution():
+    H0 = np.array([[0, 1], [1, 0]])
+    Hnoise = np.zeros((2, 2))
+    indices = [0, 1]
+    tfinal = 0.5 * math.pi
+    cj_test = CJ.CJ(indices, H0, Hnoise)
+    chi_final_from_class = cj_test.chi_final(tfinal)
+    actual_chi_final = 0.5 * np.array([[0, 0, 0, 0],
+                                       [0, 1, 1, 0],
+                                       [0, 1, 1, 0],
+                                       [0, 0, 0, 0]], dtype=complex)
+    assert np.array_equal(chi_final_from_class, actual_chi_final)
