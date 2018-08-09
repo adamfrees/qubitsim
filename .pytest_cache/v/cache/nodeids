@@ -1,6 +1,6 @@
 [
-  "CJFidelities_test.py::test_dimension_chi0",
-  "CJFidelities_test.py::test_chi0_initiliazation",
-  "CJFidelities_test.py::test_kernel_basic",
-  "CJFidelities_test.py::test_basic_evolution"
+  "HybridQubit_test.py::test_qubit_initialization",
+  "HybridQubit_test.py::test_qubit_hamiltonian_lab",
+  "HybridQubit_test.py::test_eigenbasis_normalization",
+  "HybridQubit_test.py::test_derivatives"
 ]

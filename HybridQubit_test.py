@@ -35,3 +35,9 @@ def test_eigenbasis_normalization():
     qubit = hybrid.HybridQubit(30.0, 10.0, 7.0, 4.0)
     for vector in qubit.qubit_basis().T:
         assert np.linalg.norm(vector) - 1 <= 1e-15
+
+
+def test_derivatives():
+    qubit = hybrid.SOSSHybrid(2.0, 10.0)
+    deriv_from_method = qubit.splitting_derivative(1)
+    assert deriv_from_method < 1e-8
