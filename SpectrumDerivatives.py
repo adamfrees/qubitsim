@@ -96,4 +96,4 @@ def centered_difference_delta1():
 
 
 if __name__ == '__main__':
-    centered_difference_delta1()
+    centered_difference_ed()
