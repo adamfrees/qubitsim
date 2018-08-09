@@ -35,8 +35,8 @@ def test_kernel_basic():
     indices = [0, 1]
     cj_test = CJ.CJ(indices, H0, Hnoise)
     kernel_from_class = cj_test.kernel
-    test_kernel = np.array([[0, 1, 0, 1],
-                            [1, 0, 1, 0],
-                            [0, 1, 0, 1],
-                            [1, 0, 1, 0]])
+    test_kernel = np.array([[0, 1, 0, 0],
+                            [1, 0, 0, 0],
+                            [0, 0, 0, 1],
+                            [0, 0, 1, 0]])
     assert np.array_equal(kernel_from_class, test_kernel)

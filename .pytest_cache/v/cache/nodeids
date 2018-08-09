@@ -1,4 +1,5 @@
 [
   "CJFidelities_test.py::test_dimension_chi0",
-  "CJFidelities_test.py::test_chi0_initiliazation"
+  "CJFidelities_test.py::test_chi0_initiliazation",
+  "CJFidelities_test.py::test_kernel_basic"
 ]
