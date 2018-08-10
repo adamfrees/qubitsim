@@ -33,8 +33,8 @@ def noise_sample_run(ded, tfinal):
     match_freq = 10.0
     indices = [0, 1]
     qubit = hybrid.SOSSHybrid(operating_point, match_freq)
-    H0 = qubit.hamiltonian_lab()
-    noise = qubit.detuning_noise_lab(ded)
+    H0 = np.diag(qubit.energies())
+    noise = qubit.detuning_noise_qubit(ded)
     # noise = np.zeros((3,3))
 
     ChoiSimulation = cj.CJ(indices, H0, noise)
