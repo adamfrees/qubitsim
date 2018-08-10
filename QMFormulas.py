@@ -34,9 +34,9 @@ def processFidelity(chiIdeal, chiActual):
     chiIdeal and chiActual are not assumed to be unitary 
     processes"""
     trace1 = np.real(np.trace(chiIdeal @ chiActual))
-    trace2 = np.real(np.trace(chiIdeal))
-    trace3 = np.real(np.trace(chiActual))
-    return trace1 / (trace2 * trace3)
+    # trace2 = np.sqrt(np.real(np.trace(chiIdeal @ chiIdeal)))
+    # trace3 = np.sqrt(np.real(np.trace(chiActual @ chiActual)))
+    return trace1
 
 
 def processInfidelity(chiIdeal, chiActual):
