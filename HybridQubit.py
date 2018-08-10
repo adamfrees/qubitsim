@@ -129,6 +129,16 @@ class HybridQubit(object):
         return np.diag([-0.5*ded, -0.5*ded, 0.5*ded])
 
 
+    def detuning_noise_qubit(self, ded):
+        """
+        Return the noise matrix in the qubit frame. Will have units of 
+        angular GHz.
+        Input(GHz):
+          ded: dipolar detuning
+        """
+        return self.qubit_basis().T @ self.detuning_noise_lab(ded) @ self.qubit_basis()
+
+
     def dipole_operator_qubit(self):
         """return the full dipole operator for the 
         quantum dot hybrid qubit"""
