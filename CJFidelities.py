@@ -24,6 +24,12 @@ class CJ (object):
         converted_indices = [(int(dim) + 1) * x for x in indices]
         chi0 = np.zeros((dim**2, dim**2), dtype=complex)
         chi0[np.ix_(converted_indices, converted_indices)] = norm
+        # basis = LA.eigh(hamiltonian)[1]
+        # for i in range(basis.shape[1]):
+        #     if basis[0, i] < 0:
+        #         basis[:, i] *= -1
+        # basis = np.kron(basis, basis)
+        # chi0 = basis @ chi0 @ basis.T
         self.chi0 = chi0
         self.kernel = np.kron(np.identity(dim), hamiltonian)
         self.noise = np.kron(np.identity(dim), noise_hamiltonian)
