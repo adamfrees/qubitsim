@@ -89,9 +89,9 @@ def simple_noise_sampling(tfinal, samples0):
         cj_array1[:, :, 1::2] += cj_array1_new
         average_cj1 = noise_averaging(noise_samples1, noise_weights1, cj_array1)
         print(qmf.processInfidelity(average_cj0, average_cj1))
-        # converge_value = np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T))))
+        converge_value = np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T))))
         print(converge_value)
-        converge_value = qmf.processInfidelity(average_cj0, average_cj1)
+        # converge_value = qmf.processInfidelity(average_cj0, average_cj1)
 
         # print(qmf.processInfidelity(average_cj0, average_cj0))
         # print(qmf.processInfidelity(average_cj1, average_cj1))
