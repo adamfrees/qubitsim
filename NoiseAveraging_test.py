@@ -42,11 +42,13 @@ def test_two_sigma_doubling():
 
 # def test_wing_doubling():
     sigma = 1.1
-    original = np.linspace(-6*sigma, 6*sigma, 21)
+    original = np.linspace(-6*sigma, 6*sigma, 11)
     new_samples = NoiseAveraging.wing_doubling(original, sigma)
-    test_array = np.array([-6.6, -6.27, -5.94, -5.61, -5.28, -4.95, -4.62, 
-                           -4.29, -3.96, -3.63, -3.3, -2.97, -2.64,
-                           -1.98, -1.32, -0.66, 0, 0.66, 1.32, 1.98,
-                           2.64, 2.97, 3.3, 3.63, 3.96, 4.29, 4.62, 
-                           4.95, 5.28, 5.61, 5.94, 6.27, 6.6])
+    test_array = np.array([-6.6, (-6.6-5.28)/2, -5.28, (-5.28-3.96)/2,
+                           -3.96, (-3.96-2.64)/2, -2.64,
+                           -1.32, 0.0, 1.32,
+                           2.64, (2.64+3.96)/2, 3.96, (3.96+5.28)/2,
+                           5.28, (5.28+6.6)/2, 6.6])
+    print(test_array)
+    print(new_samples)
     assert np.allclose(test_array, new_samples)
