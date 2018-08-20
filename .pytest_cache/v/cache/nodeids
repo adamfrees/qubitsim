@@ -9,6 +9,7 @@
   "HybridQubit_test.py::test_derivatives",
   "NoiseAveraging_test.py::test_noise_doubling",
   "NoiseAveraging_test.py::test_even_area_sampling",
+  "NoiseAveraging_test.py::test_two_sigma_doubling",
   "QMFormulas_test.py::test_eigvector_phase_sort_test",
   "QMFormulas_test.py::test_gaussian_mean_sd_testing",
   "QMFormulas_test.py::test_basis_change_real",
