@@ -27,14 +27,14 @@ def noise_doubling(original):
 
 
 def two_sigma_doubling(original, sigma):
-    middle = np.nonzero(np.less_equal(np.abs(original), 2*sigma))[0]
+    middle = np.nonzero(np.fabs(original) <= 2*sigma)[0]
     new_size = len(original) + len(middle) - 1
     start = range(0, middle[0])
     finish = range(middle[-1]+1, len(original))
     new_start = start
-    new_middle = range(middle[0], middle[0]+2*len(middle))
+    new_middle = range(middle[0], middle[0]+2*len(middle)-1)
     new_finish = range(new_middle[-1]+1, new_size)
-    new_samples = noise_doubling(original[middle])
+    new_samples = noise_doubling(original[middle])[1]
 
     new_array = np.zeros((new_size))
     new_array[new_start] += original[start]
@@ -109,16 +109,6 @@ def simple_noise_sampling(tfinal, samples0):
         print(qmf.processInfidelity(average_cj0, average_cj1))
         converge_value = np.abs(np.trace(sqrtm((average_cj0-average_cj1) @ (average_cj0.T - average_cj1.T))))
         print(converge_value)
-        # converge_value = qmf.processInfidelity(average_cj0, average_cj1)
-
-        # print(qmf.processInfidelity(average_cj0, average_cj0))
-        # print(qmf.processInfidelity(average_cj1, average_cj1))
-
-
-        # print('-------')
-        # print(average_cj0[0, 1])
-        # print(average_cj1[0, 1])
-        # print('-------')
         samples = len(noise_samples0)
         print(samples)
 
@@ -201,9 +191,3 @@ def choosing_final_time(qubit, sigma):
     T22 = (deriv2 * sigma**2) / (math.sqrt(2) * planck**2)
     T23 = (deriv3 * sigma**3) / (math.sqrt(2) * planck**3)
     return np.sum(np.array([T21, T22, T23]))
-
-
-if __name__ == '__main__':
-    trange, cj_time_array = bare_time_evolution()
-    np.save('trange_test.npy', trange)
-    np.save('cj_array_test.npy', cj_time_array)
