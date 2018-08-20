@@ -8,6 +8,13 @@ import scipy.linalg as LA
 import HybridQubit as hybrid
 
 
+def multi_sigma_convergence(sigma_array):
+    """Ensure convergence of averaging a computed chi-matrix array with 
+    respect to gaussians with standard deviations given by sigma_array.
+    If convergence hasn't been reached, more samples will be taken."""
+    return None
+
+
 def time_sweep(qubit):
     """
     Given a qubit operating point, represented by the input hybrid qubit object,
@@ -19,7 +26,6 @@ def time_sweep(qubit):
             chi_array, array of process matrices at the simulated times
     """
     return None
-
 
 def operating_point_stability(operating_point, match_freq):
     """
