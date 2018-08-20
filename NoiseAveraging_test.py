@@ -26,3 +26,15 @@ def test_even_area_sampling():
     test_total = difference * (samples-3)
     assert len(test_samples) == (samples-2)
     assert np.sum(differences) == test_total
+
+
+def test_two_sigma_doubling():
+    sigma = 1.1
+    original = np.linspace(-6*sigma, 6*sigma, 25)
+    new_sample = NoiseAveraging.two_sigma_doubling(original, sigma)
+
+
+def test_wing_doubling():
+    sigma = 1.1
+    original = np.linspace(-6*sigma, 6*sigma, 25)
+    new_samples = NoiseAveraging.wing_doubling(original, sigma)

@@ -43,6 +43,22 @@ def two_sigma_doubling(original, sigma):
     return new_array
 
 
+def wing_doubling(original, sigma):
+    middle = np.nonzero(np.fabs(original) <= 2*sigma)[0]
+    start = range(0, middle[0])
+    finish = range(middle[-1]+1, len(original))
+    new_size = len(original) + len(start) + len(finish) - 2
+
+    start_double = noise_doubling(original[start])[1]
+    finish_double = noise_doubling(original[finish])[1]
+
+    new_array = np.zeros((new_size))
+    new_array[0:len(start_double)] += start_double
+    new_array[len(start_double):len(start_double)+len(middle)] += original[middle]
+    new_array[-len(finish_double), -1] += finish_double
+    return new_array
+
+
 
 def noise_sample_run(ded, tfinal):
     """Run a single noise sample at noise point ded (GHz)
