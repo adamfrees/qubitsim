@@ -26,6 +26,24 @@ def noise_doubling(original):
     return new_samples, full_array
 
 
+def two_sigma_doubling(original, sigma):
+    middle = np.nonzero(np.less_equal(np.abs(original), 2*sigma))[0]
+    new_size = len(original) + len(middle) - 1
+    start = range(0, middle[0])
+    finish = range(middle[-1]+1, len(original))
+    new_start = start
+    new_middle = range(middle[0], middle[0]+2*len(middle))
+    new_finish = range(new_middle[-1]+1, new_size)
+    new_samples = noise_doubling(original[middle])
+
+    new_array = np.zeros((new_size))
+    new_array[new_start] += original[start]
+    new_array[new_middle] += new_samples
+    new_array[new_finish] += original[finish]
+    return new_array
+
+
+
 def noise_sample_run(ded, tfinal):
     """Run a single noise sample at noise point ded (GHz)
     and at time tfinal"""
