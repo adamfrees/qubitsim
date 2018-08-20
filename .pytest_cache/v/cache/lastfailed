@@ -1,3 +1,4 @@
 {
+  "NoiseAveraging_test.py::test_two_sigma_doubling": true,
   "NoiseAveraging_test.py::test_wing_doubling": true
 }
