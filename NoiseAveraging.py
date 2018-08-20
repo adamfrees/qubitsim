@@ -55,7 +55,7 @@ def wing_doubling(original, sigma):
     new_array = np.zeros((new_size))
     new_array[0:len(start_double)] += start_double
     new_array[len(start_double):len(start_double)+len(middle)] += original[middle]
-    new_array[-len(finish_double), -1] += finish_double
+    new_array[-len(finish_double):-1] += finish_double
     return new_array
 
 
