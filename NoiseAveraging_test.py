@@ -30,8 +30,13 @@ def test_even_area_sampling():
 
 def test_two_sigma_doubling():
     sigma = 1.1
-    original = np.linspace(-6*sigma, 6*sigma, 25)
+    original = np.linspace(-6*sigma, 6*sigma, 21)
     new_sample = NoiseAveraging.two_sigma_doubling(original, sigma)
+    test_array = np.array([-6.6, -5.94, -5.28, -4.62, -3.96, -3.3, -2.64, 
+    -1.98, -1.65, -1.32, -0.99, -0.66, -0.33,
+    0.0, 0.33, 0.66, 0.99, 1.32, 1.65, 1.98,
+    2.64, 3.3, 3.96, 4.62, 5.28, 5.94, 6.6])
+    assert np.array_equal(new_samples, test_array)
 
 
 def test_wing_doubling():
