@@ -47,6 +47,7 @@ class CJ (object):
         if tfinal == 0.0:
             return self.chi0
         else:
-            unitary_operation = LA.expm(-1j * tfinal*(self.kernel + self.noise))
             unitary_rotation = LA.expm(1j * tfinal * self.rot_basis)
-            return unitary_rotation @ (unitary_operation @ self.chi0 @ unitary_operation.conj().T) @ unitary_rotation.conj().T
+            mod_interaction = unitary_rotation @ self.noise @ unitary_rotation.conj().T
+            unitary_operation = LA.expm(-1j * tfinal * mod_interaction)
+            return unitary_operation @ self.chi0 @ unitary_operation.conj().T
