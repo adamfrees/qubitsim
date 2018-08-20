@@ -7,6 +7,20 @@ import scipy.linalg as LA
 
 import HybridQubit as hybrid
 
+
+def time_sweep(qubit):
+    """
+    Given a qubit operating point, represented by the input hybrid qubit object,
+    return the process matrix evolution as a function of time.
+    
+    Inputs: qubit
+    
+    Ouputs: trange, array of simulated times
+            chi_array, array of process matrices at the simulated times
+    """
+    return None
+
+
 def operating_point_stability(operating_point, match_freq):
     """
     Given an operating point in the detuning, want to find the required 
