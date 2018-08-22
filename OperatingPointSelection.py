@@ -69,6 +69,9 @@ def noise_averaging(x, noise_weights, cj_array):
 
 
 def multi_sigma_noise_sampling(qubit, tfinal, sigma_array):
+    """Ensure convergence of averaging a computed chi-matrix array with 
+    respect to gaussians with standard deviations given by sigma_array.
+    If convergence hasn't been reached, more samples will be taken."""
     from scipy.stats import norm
     noise_samples0 = np.linspace(-5*sigma_array[-1], 5*sigma_array[-1], 101)
     noise_weights = np.zeros((len(sigma_array), len(noise_samples0)))
@@ -79,14 +82,38 @@ def multi_sigma_noise_sampling(qubit, tfinal, sigma_array):
     num_runs = 1
 
     cj_array0 = noise_iteration(qubit, tfinal, noise_samples0)
-
-def multi_sigma_convergence(tfinal, sigma_array, qubit):
-    """Ensure convergence of averaging a computed chi-matrix array with 
-    respect to gaussians with standard deviations given by sigma_array.
-    If convergence hasn't been reached, more samples will be taken."""
-    initial_samples = np.linspace(-5*sigma_array[-1], 5*sigma_array[-1], 101)
-    cj_sample_array = np.zeros((9, 9, len(initial_samples), dtype=complex)
     return None
+
+
+def choosing_final_time(qubit, sigma):
+    """ Function to make a guess at the final time required 
+    for estimating decoherence"""
+    planck = 4.135667662e-9
+    h = 1e-3
+    coeff_array1 = np.array([1/12, -2/3, 0, 2/3, -1/12])
+    coeff_array2 = np.array([-1/12, 4/3, -5/2, 4/3, -1/12])
+    coeff_array3 = np.array([-1/2, 1, 0, -1, 1/2])
+
+    ed = qubit.ed
+    stsplitting = qubit.stsplitting
+    delta1 = qubit.delta1
+    delta2 = qubit.delta2
+
+    qsm2 = hybrid.HybridQubit(ed - 2*h, stsplitting, delta1, delta2).qubit_splitting()
+    qsm1 = hybrid.HybridQubit(ed - h, stsplitting, delta1, delta2).qubit_splitting()
+    qsp1 = hybrid.HybridQubit(ed + h, stsplitting, delta1, delta2).qubit_splitting()
+    qsp2 = hybrid.HybridQubit(ed + 2*h, stsplitting, delta1, delta2).qubit_splitting()
+
+    sample_array = np.array([qsm2, qsm1, qubit.qubit_splitting(), qsp1, qsp2]) / (2*math.pi)
+
+    deriv1 = np.abs(np.dot(sample_array, coeff_array1))
+    deriv2 = np.abs(np.dot(sample_array, coeff_array2))
+    deriv3 = np.abs(np.dot(sample_array, coeff_array3))
+
+    T21 = (deriv1*sigma) / (math.sqrt(2) * planck)
+    T22 = (deriv2 * sigma**2) / (math.sqrt(2) * planck**2)
+    T23 = (deriv3 * sigma**3) / (math.sqrt(2) * planck**3)
+    return np.sum(np.array([T21, T22, T23]))
 
 
 def time_sweep(qubit):
@@ -99,6 +126,7 @@ def time_sweep(qubit):
     Ouputs: trange, array of simulated times
             chi_array, array of process matrices at the simulated times
     """
+    tfinal = choosing_final_time(qubit, sigma_max)
     return None
 
 def operating_point_stability(operating_point, match_freq):
@@ -133,5 +161,6 @@ def operating_point_stability(operating_point, match_freq):
                                               ref_hybrid.stsplitting,
                                               delta1_array[i],
                                               delta2_array[j])
+            trange, chi_array = time_sweep(local_hybrid)
             
     return None
