@@ -68,21 +68,56 @@ def noise_averaging(x, noise_weights, cj_array):
     return matrix_int / norm
 
 
+def process_noise(qubit, tfinal, noise_samples, sigma_array):
+    from scipy.stats import norm
+    noise_weights = np.zeros((len(sigma_array), len(noise_samples)))
+    cj_array = noise_iteration(qubit, tfinal, noise_samples0)
+    cj_average = np.zeros((len(sigma_array), 9,9), dtype=complex)
+    for i in range(len(sigma_array)):
+        noise_weights[i, :] += norm.pdf(noise_samples, loc=0.0, scale=sigma_array[i])
+        cj_average[i, :, :] += noise_averaging(noise_samples, noise_weights[i, :], cj_array)
+    return cj_average, cj_array
+    
+
+
 def multi_sigma_noise_sampling(qubit, tfinal, sigma_array):
     """Ensure convergence of averaging a computed chi-matrix array with 
     respect to gaussians with standard deviations given by sigma_array.
     If convergence hasn't been reached, more samples will be taken."""
-    from scipy.stats import norm
+
     noise_samples0 = np.linspace(-5*sigma_array[-1], 5*sigma_array[-1], 101)
-    noise_weights = np.zeros((len(sigma_array), len(noise_samples0)))
-    for i in range(len(sigma_array)):
-        noise_weights[i, :] += norm.pdf(noise_samples0, loc=0.0, scale=sigma_array[i])
+    cj_average0, cj_array0 = process_noise(qubit, tfinal, noise_samples0, sigma_array)
     
     converge_value = 1.0
     num_runs = 1
+    sig_index = -1
 
-    cj_array0 = noise_iteration(qubit, tfinal, noise_samples0)
-    return None
+    while converge_value > 1e-8:
+        if num_runs % 3 == 0:
+            noise_samples1 = wing_doubling(noise_samples0, sigma_array[sig_index])
+        else:
+            noise_samples1 = two_sigma_doubling(noise_samples0, sigma_array[sig_index])
+        cj_average1, cj_array1 = process_noise(qubit, tfinal, noise_samples1, sigma_array)
+
+        converge_array = np.zeros((len(sigma_array)))
+        for i in range(len(sigma_array)):
+            norm = np.sqrt(
+                   np.real(
+                   np.trace(
+                            (cj_average1-cj_average0) @ (cj_average1 - cj_average0).conj().T)))
+            converge_array[i] += norm
+        
+        converge_value = np.max(converge_array)
+        for i, norm in reversed(list(enumerate(converge_array))):
+            if norm < 1e-8:
+                sig_index = i
+                break
+
+        noise_samples0 = noise_samples1
+        cj_average0 = cj_average1
+        cj_array0 = cj_array1
+        num_runs += 1
+    return noise_samples1, cj_average1
 
 
 def choosing_final_time(qubit, sigma):
