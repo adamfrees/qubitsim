@@ -100,12 +100,12 @@ def multi_sigma_noise_sampling(qubit, tfinal_array, sigma_array, num_samples):
         cj_average1, cj_array1 = process_noise(qubit, tfinal_array, noise_samples1, sigma_array)
 
         converge_array = np.zeros((len(sigma_array)))
-        for i in range(len(sigma_array)):
-            norm = np.sqrt(
-                   np.real(
-                   np.trace(
-                            (cj_average1-cj_average0) @ (cj_average1 - cj_average0).conj().T)))
-            converge_array[i] += norm
+
+        diff_matrix = cj_average1 - cj_average0
+        converge_array = np.sqrt(
+            np.einsum('ijj',
+            np.einsum('ijk,ikm_>ijm', diff_matrix, diff_matrix.conj().T)))
+  
         
         converge_value = np.max(converge_array)
         for i, norm in reversed(list(enumerate(converge_array))):
