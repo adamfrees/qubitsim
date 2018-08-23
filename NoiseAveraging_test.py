@@ -16,7 +16,6 @@ def test_noise_doubling():
 
 
 def test_even_area_sampling():
-    from scipy.special import erf
     samples = 51
     difference = 2.0 / (samples - 1)
     sigma = 2.5
