@@ -1,0 +1,8 @@
+name: parallel-python3
+dependencies:
+- python=3
+- mpi4py
+- numpy
+- scipy
+- matplotlib
+- anaconda
