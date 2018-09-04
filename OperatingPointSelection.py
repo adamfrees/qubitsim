@@ -179,13 +179,13 @@ def time_sweep(qubit):
     tarray = np.arange(0.0, tfinal, tmin / 100)
     num_noise_samples = 32
 
-    cj_mass_array = np.empty((len(tarray), len(sigma_array), 9, 9), dtype=complex)
+    mass_chi_array = np.empty((len(tarray), len(sigma_array), 9, 9), dtype=complex)
     for i in range(len(tarray)):
         tstep = tarray[i]
-        num_noise_samples, cj_array_sigma = multi_sigma_noise_sampling(qubit, tstep, sigma_array, num_noise_samples)
-        cj_mass_array[i, :, :, :] = cj_array_sigma
+        num_noise_samples, sigma_chi_arra = multi_sigma_noise_sampling(qubit, tstep, sigma_array, num_noise_samples)
+        cj_mass_array[i, :, :, :] = sigma_chi_arra
 
-    return tarray, sigma_array, cj_mass_array
+    return tarray, sigma_array, mass_chi_array
 
 
 def time_evolution_point(operating_point, delta1_point, delta2_point):
@@ -201,5 +201,5 @@ def time_evolution_point(operating_point, delta1_point, delta2_point):
                                delta1_point * delta1_ref,
                                delta2_point * delta2_ref,
                                stsplitting)
-    trange, sigma_array, cj_array = time_sweep(qubit)
-    return trange, sigma_array, cj_array
+    trange, sigma_array, mass_chi_array = time_sweep(qubit)
+    return trange, sigma_array, mass_chi_array
