@@ -128,7 +128,7 @@ def multi_sigma_noise_sampling(qubit, tstep, sigma_array, num_samples):
     If convergence hasn't been reached, more samples will be taken."""
 
     noise_samples0 = np.linspace(-5*sigma_array[-1], 5*sigma_array[-1], num_samples)
-    average_chi_array0, raw_chi_array0 = process_noise(qubit, tfinal_array, noise_samples0, sigma_array)
+    average_chi_array0, raw_chi_array0 = process_noise(qubit, tstep, noise_samples0, sigma_array)
     
     converge_value = 1.0
     num_runs = 1
@@ -140,7 +140,7 @@ def multi_sigma_noise_sampling(qubit, tstep, sigma_array, num_samples):
             noise_samples1 = wing_doubling(noise_samples0, sigma_array[sig_index])
         else:
             noise_samples1 = two_sigma_doubling(noise_samples0, sigma_array[sig_index])
-        average_chi_array1, raw_chi_array1 = process_noise(qubit, tfinal_array, noise_samples1, sigma_array)
+        average_chi_array1, raw_chi_array1 = process_noise(qubit, tstep, noise_samples1, sigma_array)
 
         converge_array = np.zeros((len(sigma_array)))
 
@@ -157,10 +157,10 @@ def multi_sigma_noise_sampling(qubit, tstep, sigma_array, num_samples):
                 break
 
         noise_samples0 = noise_samples1
-        cj_average0 = cj_average1
-        cj_array0 = cj_array1
+        average_chi_array0 = average_chi_array1
+        raw_chi_array0 = raw_chi_array1
         num_runs += 1
-    return len(noise_samples1), cj_average1
+    return len(noise_samples1), average_chi_array1
 
 
 def time_sweep(qubit):
