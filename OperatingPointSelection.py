@@ -40,6 +40,15 @@ def choosing_final_time(qubit, sigma):
     return np.sum(np.array([T21, T22, T23]))
 
 
+def noise_doubling(original):
+    """Bisect an original sample given"""
+    new_samples = 0.5 * np.diff(original) + original[:-1]
+    full_array = np.zeros((original.size + new_samples.size,), dtype=original.dtype)
+    full_array[0::2] = original
+    full_array[1::2] = new_samples
+    return new_samples, full_array
+
+
 def two_sigma_doubling(original, sigma):
     middle = np.nonzero(np.fabs(original) <= 2*sigma)[0]
     new_size = len(original) + len(middle) - 1
