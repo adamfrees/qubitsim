@@ -185,9 +185,9 @@ def time_sweep(qubit):
     ueV_conversion = 0.241799050402417
     sigma_array = np.array([0.5, 1.0, 2.0, 5.0, 7.0, 10.0]) * ueV_conversion
     tfinal = choosing_final_time(qubit, np.median(sigma_array))
-    # tmin = choosing_final_time(qubit, np.max(sigma_array))
-    # tarray = np.arange(0.0, tfinal, tmin / 100)
-    tarray = np.linspace(0.0, tfinal, 1000)
+    tmin = choosing_final_time(qubit, np.max(sigma_array))
+    tarray = np.arange(0.0, tfinal, tmin / 100)
+    # tarray = np.linspace(0.0, tfinal, 1000)
     num_noise_samples = 32
 
     mass_chi_array = np.empty((len(tarray), len(sigma_array), 9, 9), dtype=complex)
