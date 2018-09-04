@@ -12,7 +12,7 @@ import CJFidelities as cj
 def choosing_final_time(qubit, sigma):
     """ Function to make a guess at the final time required 
     for estimating decoherence"""
-    h = 1e-2
+    h = 1e-3
     coeff_array1 = np.array([1/12, -2/3, 0, 2/3, -1/12])
     coeff_array2 = np.array([-1/12, 4/3, -5/2, 4/3, -1/12])
     coeff_array3 = np.array([-1/2, 1, 0, -1, 1/2])
@@ -36,7 +36,7 @@ def choosing_final_time(qubit, sigma):
     G21 = 2*(deriv1*sigma)
     G22 = 2*(deriv2 * sigma**2)
     G23 = 2*(deriv3 * sigma**3)
-    return np.sum(np.reciprocal(np.array([G21, G22, G23])))
+    return np.reciprocal(np.sum(np.array([G21, G22, G23])))
 
 
 def noise_doubling(original):
@@ -153,10 +153,10 @@ def multi_sigma_noise_sampling(qubit, tstep, sigma_array, num_samples):
         converge_array = np.zeros((len(sigma_array)))
 
         diff_matrix = average_chi_array1 - average_chi_array0
-        converge_array = np.sqrt(
+        converge_array = np.real(np.sqrt(
             np.einsum('ijj',
             np.einsum('ijk,ikm->ijm', diff_matrix, 
-                np.einsum('ikj', diff_matrix.conj()))))
+                np.einsum('ikj', diff_matrix.conj())))))
   
         # Ensure that all of the individual chi-matrices have converged
         converge_value = np.max(converge_array)
@@ -168,6 +168,8 @@ def multi_sigma_noise_sampling(qubit, tstep, sigma_array, num_samples):
         noise_samples0 = noise_samples1
         average_chi_array0 = average_chi_array1
         raw_chi_array0 = raw_chi_array1
+        print(converge_array)
+        print(num_runs)
         num_runs += 1
     return len(noise_samples1), average_chi_array1
 
@@ -188,12 +190,12 @@ def time_sweep(qubit):
     tmin = choosing_final_time(qubit, np.max(sigma_array))
     tarray = np.arange(0.0, tfinal, tmin / 100)
     # tarray = np.linspace(0.0, tfinal, 1000)
-    num_noise_samples = 32
+    num_noise_samples = 128
 
     mass_chi_array = np.empty((len(tarray), len(sigma_array), 9, 9), dtype=complex)
     for i in range(len(tarray)):
         tstep = tarray[i]
-        print(tstep)
+        print(tstep, tfinal)
         num_noise_samples, sigma_chi_array = multi_sigma_noise_sampling(qubit, tstep, sigma_array, num_noise_samples)
         mass_chi_array[i, :, :, :] = sigma_chi_array
 
