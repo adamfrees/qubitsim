@@ -193,8 +193,9 @@ def time_sweep(qubit):
     mass_chi_array = np.empty((len(tarray), len(sigma_array), 9, 9), dtype=complex)
     for i in range(len(tarray)):
         tstep = tarray[i]
-        num_noise_samples, sigma_chi_arra = multi_sigma_noise_sampling(qubit, tstep, sigma_array, num_noise_samples)
-        mass_chi_array[i, :, :, :] = sigma_chi_arra
+        print(tstep)
+        num_noise_samples, sigma_chi_array = multi_sigma_noise_sampling(qubit, tstep, sigma_array, num_noise_samples)
+        mass_chi_array[i, :, :, :] = sigma_chi_array
 
     return tarray, sigma_array, mass_chi_array
 
