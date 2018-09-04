@@ -12,7 +12,6 @@ import CJFidelities as cj
 def choosing_final_time(qubit, sigma):
     """ Function to make a guess at the final time required 
     for estimating decoherence"""
-    planck = 4.135667662e-9
     h = 1e-2
     coeff_array1 = np.array([1/12, -2/3, 0, 2/3, -1/12])
     coeff_array2 = np.array([-1/12, 4/3, -5/2, 4/3, -1/12])
@@ -34,10 +33,10 @@ def choosing_final_time(qubit, sigma):
     deriv2 = np.abs(np.dot(sample_array, coeff_array2))
     deriv3 = np.abs(np.dot(sample_array, coeff_array3))
 
-    T21 = (deriv1*sigma) / (math.sqrt(2) * planck)
-    T22 = (deriv2 * sigma**2) / (math.sqrt(2) * planck**2)
-    T23 = (deriv3 * sigma**3) / (math.sqrt(2) * planck**3)
-    return np.sum(np.array([T21, T22, T23]))
+    G21 = 2*(deriv1*sigma)
+    G22 = 2*(deriv2 * sigma**2)
+    G23 = 2*(deriv3 * sigma**3)
+    return np.sum(np.reciprocal(np.array([G21, G22, G23])))
 
 
 def noise_doubling(original):
@@ -183,7 +182,8 @@ def time_sweep(qubit):
     Ouputs: trange, array of simulated times
             chi_array, array of process matrices at the simulated times
     """
-    sigma_array = np.array([0.5, 1.0, 2.0, 5.0, 7.0, 10.0])
+    ueV_conversion = 0.241799050402417
+    sigma_array = np.array([0.5, 1.0, 2.0, 5.0, 7.0, 10.0]) * ueV_conversion
     tfinal = choosing_final_time(qubit, np.median(sigma_array))
     # tmin = choosing_final_time(qubit, np.max(sigma_array))
     # tarray = np.arange(0.0, tfinal, tmin / 100)
