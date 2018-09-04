@@ -114,10 +114,10 @@ def process_noise(qubit, tstep, noise_samples, sigma_array):
     from scipy.stats import norm
     noise_weights = np.zeros((len(sigma_array), len(noise_samples)))
     average_chi_array = np.zeros((len(sigma_array), 9,9), dtype=complex)
+    raw_chi_array = noise_iteration(qubit, tstep, noise_samples)
     for i in range(len(sigma_array)):
-        raw_chi_array = noise_iteration(qubit, tfinal_array[i], noise_samples)
         noise_weights[i, :] += norm.pdf(noise_samples, loc=0.0, scale=sigma_array[i])
-        average_chi_array[i, :, :] += noise_averaging(noise_samples, noise_weights[i, :], cj_array)
+        average_chi_array[i, :, :] += noise_averaging(noise_samples, noise_weights[i, :], raw_chi_array)
     return average_chi_array, raw_chi_array
     
 
