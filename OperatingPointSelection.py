@@ -156,7 +156,8 @@ def multi_sigma_noise_sampling(qubit, tstep, sigma_array, num_samples):
         diff_matrix = average_chi_array1 - average_chi_array0
         converge_array = np.sqrt(
             np.einsum('ijj',
-            np.einsum('ijk,ikm->ijm', diff_matrix, diff_matrix.conj().T)))
+            np.einsum('ijk,ikm->ijm', diff_matrix, 
+                np.einsum('ikj', diff_matrix.conj()))))
   
         # Ensure that all of the individual chi-matrices have converged
         converge_value = np.max(converge_array)
@@ -192,7 +193,7 @@ def time_sweep(qubit):
     for i in range(len(tarray)):
         tstep = tarray[i]
         num_noise_samples, sigma_chi_arra = multi_sigma_noise_sampling(qubit, tstep, sigma_array, num_noise_samples)
-        cj_mass_array[i, :, :, :] = sigma_chi_arra
+        mass_chi_array[i, :, :, :] = sigma_chi_arra
 
     return tarray, sigma_array, mass_chi_array
 
