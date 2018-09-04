@@ -156,7 +156,7 @@ def multi_sigma_noise_sampling(qubit, tstep, sigma_array, num_samples):
         diff_matrix = average_chi_array1 - average_chi_array0
         converge_array = np.sqrt(
             np.einsum('ijj',
-            np.einsum('ijk,ikm_>ijm', diff_matrix, diff_matrix.conj().T)))
+            np.einsum('ijk,ikm->ijm', diff_matrix, diff_matrix.conj().T)))
   
         # Ensure that all of the individual chi-matrices have converged
         converge_value = np.max(converge_array)
