@@ -85,7 +85,7 @@ def noise_sample(qubit, tfinal, ded):
         return ChoiSimulation.chi_final_RF(tfinal)
 
 def noise_iteration(qubit, tfinal, noise_samples):
-    cj_array = np.zeros((9, 9, len(noise_samples), dtype=complex)
+    cj_array = np.zeros((9, 9, len(noise_samples)), dtype=complex)
     for i in range(len(noise_samples)):
         ded = noise_samples[i]
         cj_array[:, :, i] += noise_sample(qubit, tfinal, ded)
