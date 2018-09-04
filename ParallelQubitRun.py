@@ -7,7 +7,7 @@ import OperatingPointSelection as trun
 
 def SaveFiles(index_array, ed_point, delta1_point, delta2_point,
               trange, sigma_array, mass_cj_array):
-    root_folder = os.path.join('Data', 'run0')
+    root_folder = os.path.join('Data', 'run1')
     file_name = os.path.join(root_folder,
                              '{:02d}{:02d}{:02d}'.format(
                                  index_array[0], index_array[1], index_array[2]))
