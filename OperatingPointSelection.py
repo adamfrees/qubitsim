@@ -160,7 +160,7 @@ def multi_sigma_noise_sampling(qubit, tstep, sigma_array, num_samples):
         cj_average0 = cj_average1
         cj_array0 = cj_array1
         num_runs += 1
-    return noise_samples1, cj_average1
+    return len(noise_samples1), cj_average1
 
 
 def time_sweep(qubit):
@@ -178,11 +178,14 @@ def time_sweep(qubit):
     tmin = choosing_final_time(qubit, np.max(sigma_array))
     tarray = np.arange(0.0, tfinal, tmin / 100)
     num_noise_samples = 32
-    for i in range(len(tarray)):
-        t_step = tarray[i]
-        num_noise_samples, cj_array_sigma = multi_sigma_noise_average(qubit, sigma_array)
 
-    return None
+    cj_mass_array = np.empty((len(tarray), len(sigma_array), 9, 9), dtype=complex)
+    for i in range(len(tarray)):
+        tstep = tarray[i]
+        num_noise_samples, cj_array_sigma = multi_sigma_noise_sampling(qubit, tstep, sigma_array, num_noise_samples)
+        cj_mass_array[i, :, :, :] = cj_array_sigma
+
+    return tarray, sigma_array, cj_mass_array
 
 
 def time_evolution_point(operating_point, delta1_point, delta2_point):
