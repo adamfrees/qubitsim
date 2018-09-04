@@ -33,7 +33,7 @@ delta2_array = np.linspace(0.95, 1.05, 11)
 
 if rank == 0:
     data0 = np.array(range(size), dtype=int)
-    data1 = np.array(range(11), dtype=float)
+    data1 = np.array(range(11), dtype=int)
     data2 = np.array(range(11), dtype=int)
     data = np.ravel(np.array(np.meshgrid(data0, data1, data2)).T)
 
