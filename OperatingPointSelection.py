@@ -13,7 +13,7 @@ def choosing_final_time(qubit, sigma):
     """ Function to make a guess at the final time required 
     for estimating decoherence"""
     planck = 4.135667662e-9
-    h = 1e-3
+    h = 1e-2
     coeff_array1 = np.array([1/12, -2/3, 0, 2/3, -1/12])
     coeff_array2 = np.array([-1/12, 4/3, -5/2, 4/3, -1/12])
     coeff_array3 = np.array([-1/2, 1, 0, -1, 1/2])
@@ -184,9 +184,10 @@ def time_sweep(qubit):
             chi_array, array of process matrices at the simulated times
     """
     sigma_array = np.array([0.5, 1.0, 2.0, 5.0, 7.0, 10.0])
-    tfinal = choosing_final_time(qubit, np.min(sigma_array))
-    tmin = choosing_final_time(qubit, np.max(sigma_array))
-    tarray = np.arange(0.0, tfinal, tmin / 100)
+    tfinal = choosing_final_time(qubit, np.median(sigma_array))
+    # tmin = choosing_final_time(qubit, np.max(sigma_array))
+    # tarray = np.arange(0.0, tfinal, tmin / 100)
+    tarray = np.linspace(0.0, tfinal, 1000)
     num_noise_samples = 32
 
     mass_chi_array = np.empty((len(tarray), len(sigma_array), 9, 9), dtype=complex)
