@@ -212,7 +212,7 @@ def time_evolution_point(operating_point, delta1_point, delta2_point):
     stsplitting_ref = qubit_base.stsplitting
     ed_ref = qubit_base.ed
     qubit = hybrid.HybridQubit(ed_ref,
-                               stsplitting_ref
+                               stsplitting_ref,
                                delta1_point * delta1_ref,
                                delta2_point * delta2_ref)
     trange, sigma_array, mass_chi_array = time_sweep(qubit)
