@@ -9,3 +9,4 @@ TestingNotebooks/
 .cache/v/cache/lastfailed
 .ipynb_checkpoints/SOSSTesting-checkpoint.ipynb
 .pytest_cache/
+Data/.DS_Store
