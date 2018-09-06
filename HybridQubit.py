@@ -189,6 +189,27 @@ class HybridQubit(object):
         return np.dot(splitting_array, coeff_list) / (step ** order)
 
 
+    def imaginary_derivative(self, order):
+        """Use complex-step differentiation to find the first or 
+        second derivative"""
+        if order == 1:
+            step = 1e-6
+            H0 = self.hamiltonian_lab()
+            Himag = self.detuning_noise_lab(1.j * step)
+            evals = LA.eigvals(H0 + Himag)
+            splitting = evals[1] - evals[0]
+            return np.imag(splitting) / step
+        elif order == 2:
+            step = 1e-6
+            H0 = self.hamiltonian_lab()
+            Himag = self.detuning_noise_lab(1.j * step)
+            Hreal = self.detuning_noise_lab(step)
+            evals1 = LA.eigvals(H0 + Himag + Hreal) / (2*math.pi)
+            evals2 = LA.eigvals(H0 + Himag - Hreal) / (2*math.pi)
+            splitting1 = evals1[1] - evals1[0]
+            splitting2 = evals2[1] - evals2[0]
+            return np.imag(splitting1 - splitting2) / (2 * step**2)
+
 
 class SOSSHybrid(HybridQubit):
     """Return a hybrid qubit object that is at a second order sweet spot
