@@ -209,6 +209,8 @@ class HybridQubit(object):
             splitting1 = evals1[1] - evals1[0]
             splitting2 = evals2[1] - evals2[0]
             return np.imag(splitting1 - splitting2) / (2 * step**2)
+        else:
+            return np.nan
 
 
 class SOSSHybrid(HybridQubit):
