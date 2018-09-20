@@ -1,3 +1,8 @@
 {
-  "NoiseAveraging_test.py::test_wing_doubling": true
+  "CJFidelities_test.py::test_basic_evolution": true,
+  "CJFidelities_test.py::test_chi0_initiliazation": true,
+  "CJFidelities_test.py::test_dimension_chi0": true,
+  "CJFidelities_test.py::test_kernel_basic": true,
+  "NoiseAveraging_test.py::test_wing_doubling": true,
+  "Resonator_test.py": true
 }
