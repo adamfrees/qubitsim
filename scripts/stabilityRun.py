@@ -9,6 +9,8 @@ import math
 
 import numpy as np
 
+from soloRun import run_time_series
+
 job_index = sys.argv[0]
 
 operating_points = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
