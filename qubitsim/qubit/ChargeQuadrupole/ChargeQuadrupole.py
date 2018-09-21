@@ -25,7 +25,7 @@ class CQ(object):
         """
         Returns the hamiltonian in the labframe in units of radians/ns
         """
-        H0 = np.array([0.5 * self.eq, (self.delta1 + self.delta2)/math.sqrt(2), (self.delta1 - self.delta2)/math.sqrt(2)],
+        H0 = np.array([[0.5 * self.eq, (self.delta1 + self.delta2)/math.sqrt(2), (self.delta1 - self.delta2)/math.sqrt(2)],
                       [(self.delta1 + self.delta2)/math.sqrt(2), -0.5 * self.eq, self.ed],
-                      [(self.delta1 - self.delta2)/math.sqrt(2), self.ed, 0.5*self.eq]])
+                      [(self.delta1 - self.delta2)/math.sqrt(2), self.ed, 0.5 * self.eq]])
         return 2 * math.pi * H0
