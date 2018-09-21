@@ -128,8 +128,10 @@ class HybridQubit(object):
         Return the noise matrix for detuning noise in angular GHz
         Input (GHz):
           ded: dipolar detuning
+        Output:
+          (3x3) array in rad/ns representing lab frame detuning perturbation
         """
-        return np.diag([-0.5*ded, -0.5*ded, 0.5*ded])
+        return 2*math.pi*np.diag([-0.5*ded, -0.5*ded, 0.5*ded])
 
 
     def detuning_noise_qubit(self, ded):
