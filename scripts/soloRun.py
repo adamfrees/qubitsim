@@ -132,6 +132,7 @@ def choosing_final_time(qubit, sigma):
     Gamma21 = (deriv1*sigma) / (math.sqrt(2))
     Gamma22 = (deriv2 * sigma**2) / (math.sqrt(2))
     Gamma23 = (deriv3 * sigma**3) / (math.sqrt(2))
+    print(Gamma21, Gamma22, Gamma23)
     return 1.0 / np.sum(np.array([Gamma21, Gamma22, Gamma23]))
 
 
@@ -168,7 +169,7 @@ def run_time_series(local_params):
 
 if __name__ == '__main__':
     params = {
-        'ed_point': 3.0,
+        'ed_point': 1.0,
         'sigma' : 1.0,
         'delta1_var' : 1.0,
         'delta2_var' : 1.0
