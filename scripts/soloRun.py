@@ -11,7 +11,7 @@ from qubitsim import CJFidelities as CJ
 def norm_sin_integral(A, B, omega, exp_phi, sigma):
     """
     Return the integral
-    int_{-\infty}^{\infty} exp(-x^2/(2 sigma^2)) (A e^(-i omega x + phi) + B) / sqrt(2 pi sigma^2).
+    int_{-infty}^{infty} exp(-x^2/(2 sigma^2)) (A e^(-i omega x + phi) + B) / sqrt(2 pi sigma^2).
     Inputs:
       A: oscillation amplitude,
       B: oscillation offset,
