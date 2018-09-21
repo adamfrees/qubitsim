@@ -2,7 +2,7 @@ from mpi4py import MPI
 import math
 import numpy as np
 
-import HybridQubit as hybrid
+from qubitsim.qubit import HybridQubit as hybrid
 
 comm = MPI.COMM_WORLD
 size = comm.Get_size()

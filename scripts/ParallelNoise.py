@@ -5,7 +5,7 @@
 
 from mpi4py import MPI
 import numpy as np
-import NoiseAveraging
+from qubitsim import NoiseAveraging
 
 comm = MPI.COMM_WORLD
 size = comm.Get_size()

@@ -1,7 +1,7 @@
 # Module for noiseless evolution
 
 import numpy as np
-import CJFidelities
+from qubitsim import CJFidelities
 
 def time_evolution_RF(tfinal, arch='hybrid-SOSS'):
     if arch == 'hybrid-SOSS':

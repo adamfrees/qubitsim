@@ -5,8 +5,8 @@ import math
 import numpy as np
 import scipy.linalg as LA
 
-import HybridQubit as hybrid
-import CJFidelities as cj
+from qubitsim.qubit import HybridQubit as hybrid
+from qubitsim import CJFidelities as cj
 
 
 def choosing_final_time(qubit, sigma):
