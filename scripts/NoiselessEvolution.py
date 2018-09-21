@@ -5,7 +5,7 @@ from qubitsim import CJFidelities
 
 def time_evolution_RF(tfinal, arch='hybrid-SOSS'):
     if arch == 'hybrid-SOSS':
-        import HybridQubit as hybrid
+        from qubitsim.qubit import HybridQubit as hybrid
         indices = [0, 1]
         match_freq = 10.0
         operating_point = 3.5
