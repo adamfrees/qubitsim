@@ -3,9 +3,9 @@
 import numpy as np
 from qubitsim import CJFidelities
 
-def time_evolution_RF(tfinal, arch='hybrid-SOSS'):
-    if arch == 'hybrid-SOSS':
-        from qubitsim.qubit import HybridQubit as hybrid
+def time_evolution_RF(tfinal, qtype='hybrid-SOSS'):
+    from qubitsim.qubit import HybridQubit as hybrid
+    if qtype == 'hybrid-SOSS':
         indices = [0, 1]
         match_freq = 10.0
         operating_point = 3.5
@@ -18,7 +18,6 @@ def time_evolution_RF(tfinal, arch='hybrid-SOSS'):
         else:
             return ChoiSimulation.chi_final_RF(tfinal)
     else:
-        import HybridQubit as hybrid
         indices = [0, 1]
         match_freq = 10.0
         operating_point = 1.0
