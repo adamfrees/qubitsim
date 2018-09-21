@@ -4,6 +4,7 @@
 import math
 import numpy as np
 
+from context import qubitsim
 from qubitsim.qubit import HybridQubit as hybrid
 from qubitsim import CJFidelities as CJ
 
@@ -35,33 +36,26 @@ def noise_sample(qubit, ded, time):
     else:
         return ChoiSimulation.chi_final_RF(time)
 
-def freq_calc(data_x, data_y):
-    import scipy.signal as sig
-    dx = data_x[1] - data_x[0]
-    sp = np.fft.fft(np.real(data_y))
-    freq = np.fft.fftfreq(data_x.shape[-1],d=dx)
-    peaks = signal.argrelextrema(np.abs(sp), np.greater, order=15)
-    
-    peakindices = sig.argrelextrema(np.abs(sp.real), np.greater, order=20)
-    peakindices2 = sig.argrelextrema(np.abs(sp.imag), np.greater, order=20)
-    
-    peak1 = freq[peakindices]
-    peak2 = freq[peakindices2]
-    avgpeak = 0.25 * np.sum(np.abs(peak1 + peak2))
-    return avgpeak
-
 def fourier_find_freq(noise_samples, chi_array):
+    import scipy.signal as sig
+    dnoise = noise_samples[1] - noise_samples[0]
     chi_dim = chi_array.shape[0]
     freq = np.fft.fftfreq(noise_samples.shape[-1], d=dnoise)
     peak_freq = np.zeros((chi_dim, chi_dim))
     for i in range(chi_dim):
         for j in range(chi_dim):
             data_y = chi_array[i, j, :]
-            peak_freq[i, j] = freq_calc(noise_samples, data_y)           
+            sp = np.fft.fft(data_y)
+            peakindices = sig.argrelextrema(np.abs(sp.real), np.greater, order=20)
+            peakindices2 = sig.argrelextrema(np.abs(sp.imag), np.greater, order=20)
+            peak1 = freq[peakindices]
+            peak2 = freq[peakindices2]
+            avgpeak = 0.25 * np.sum(np.abs(peak1 + peak2))
+            peak_freq[i, j] = avgpeak        
     return peak_freq
 
 
-def process_chi_array(chi_array):
+def process_chi_array(noise_samples, chi_array):
     noise_dim = chi_array.shape[-1]
     chi_dim = chi_array.shape[0]
     
@@ -84,12 +78,9 @@ def process_chi_array(chi_array):
                 expPhase[i, j] = 1.0
             else:
                 expPhase[i, j] = (zeroValue[i, j] - offset[i, j]) / amplitude[i, j]
-            
-    return amplitude, offset, expPhase
 
-
-def fourier_analysis(cj_array):
-
+    peak_freq = fourier_find_freq(noise_samples, chi_array)  
+    return amplitude, offset, expPhase, peak_freq
 
 
 def average_process(qubit, time, sigma):
@@ -105,19 +96,18 @@ def average_process(qubit, time, sigma):
     max_noise = max_noise = 2*math.pi*5.0 / (time)
     noise_samples = np.linspace(-max_noise, max_noise, 8193)
     noise_dim = noise_samples.shape[0]
-    cj_array = np.zeros((9, 9, noise_dim))
+    cj_array = np.zeros((9, 9, noise_dim), dtype=complex)
     for i in range(noise_dim):
         ded = noise_samples[i]
         cj_array[:, :, i] += noise_sample(qubit, ded, time)
     
-
-    return None
+    amplitude, offset, expPhase, peakFreq = process_chi_array(noise_samples, cj_array)
+    return norm_sin_integral(amplitude, offset, peakFreq, expPhase, sigma)
 
 
 def choosing_final_time(qubit, sigma):
     """ Function to make a guess at the final time required 
     for estimating decoherence"""
-    planck = 4.135667662e-9
     h = 1e-3
     coeff_array1 = np.array([1/12, -2/3, 0, 2/3, -1/12])
     coeff_array2 = np.array([-1/12, 4/3, -5/2, 4/3, -1/12])
@@ -139,10 +129,10 @@ def choosing_final_time(qubit, sigma):
     deriv2 = np.abs(np.dot(sample_array, coeff_array2))
     deriv3 = np.abs(np.dot(sample_array, coeff_array3))
 
-    T21 = (deriv1*sigma) / (math.sqrt(2) * planck)
-    T22 = (deriv2 * sigma**2) / (math.sqrt(2) * planck**2)
-    T23 = (deriv3 * sigma**3) / (math.sqrt(2) * planck**3)
-    return np.sum(np.array([T21, T22, T23]))
+    Gamma21 = (deriv1*sigma) / (math.sqrt(2))
+    Gamma22 = (deriv2 * sigma**2) / (math.sqrt(2))
+    Gamma23 = (deriv3 * sigma**3) / (math.sqrt(2))
+    return 1.0 / np.sum(np.array([Gamma21, Gamma22, Gamma23]))
 
 
 def run_time_series(local_params):
@@ -166,4 +156,20 @@ def run_time_series(local_params):
     trange = np.linspace(0, tfinal, 200)
     cj_array = np.empty((qubit.dim**2, qubit.dim**2, trange.shape[0]), dtype=complex)
     for i in range(trange.shape[0]):
-        cj_array[:, :, i] += average_process(qubit, trange[i], sigma)
+        print("Time step: {}, value: {}".format(i, trange[i]))
+        if trange[i] == 0:
+            cj_array[:, :, i] += noise_sample(qubit, 0.0, 0.0)
+        else:
+            cj_array[:, :, i] += average_process(qubit, trange[i], sigma)
+    return trange, cj_array
+
+
+if __name__ == '__main__':
+    params = {
+        'ed_point': 3.0,
+        'sigma' : 1.0,
+        'delta1_var' : 1.0,
+        'delta2_var' : 1.0
+    }
+    trange, cj_array = run_time_series(params)
+    
