@@ -2,11 +2,11 @@
 *.pyc
 
 # Ignore analysis Jupyter notebooks
-TestingNotebooks/
+notebooks
 *.ipynb
 
 # Ignore test caches
 .cache/v/cache/lastfailed
-.ipynb_checkpoints/SOSSTesting-checkpoint.ipynb
+.ipynb_checkpoints/
 .pytest_cache/
-Data/.DS_Store
+.DS_Store
