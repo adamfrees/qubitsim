@@ -29,3 +29,13 @@ class CQ(object):
                       [(self.delta1 + self.delta2)/math.sqrt(2), -0.5 * self.eq, self.ed],
                       [(self.delta1 - self.delta2)/math.sqrt(2), self.ed, 0.5 * self.eq]])
         return 2 * math.pi * H0
+
+
+class IdealCQ(CQ):
+    """
+    Return a cq object with ed = 0 and balanced tunnel couplings
+    """
+    def __init__(self, eq, delta):
+        self.eq = eq
+        self.delta = delta
+        super().__init__(eq, 0.0, delta, delta)
