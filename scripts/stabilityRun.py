@@ -11,23 +11,52 @@ import numpy as np
 
 from soloRun import run_time_series
 
-job_index = sys.argv[1]
 
-operating_points = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
-delta_var = np.linspace(0.9, 1.1, 21)
-ueV_conversion = 0.241799050402417
-sigma_array = np.array([1.0, 5.0, 10.0]) * ueV_conversion
+def package_files(job_index, params, trange, process_array):
+    """Package the information into a single .npz file 
+    to be output"""
+    ed = np.array(params['ed_point'])
+    sigma = np.array(params['sigma'])
+    delta1 = np.array(params['delta1_var'])
+    delta2 = np.array(params['delta2_var'])
+    filename = '{0:02d}output.npz'.format(job_index)
+    np.savez(filename,
+             ed=ed,
+             sigma=sigma,
+             delta1=delta1,
+             delta2=delta2,
+             trange=trange,
+             process_array=process_array)
+    return None
 
-param_array = np.array(
-    np.meshgrid(
-        operating_points, sigma_array, delta_var, delta_var
-        )).T.reshape(
-            (operating_points.shape[0] * sigma_array.shape[0] * delta_var.shape[0]**2, 4))
 
-local_params = {
-    'ed_point' : param_array[job_index][0],
-    'sigma' : param_array[job_index][1],
-    'delta1_var': param_array[job_index][2],
-    'delta2_var': param_array[job_index][3]
-}
-trange, process_over_time = run_time_series(local_params)
+def runJob(job_index):
+    """Run the job specified by the job_index"""
+    operating_points = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+    delta_var = np.linspace(0.9, 1.1, 21)
+    ueV_conversion = 0.241799050402417
+    sigma_array = np.array([1.0, 5.0, 10.0]) * ueV_conversion
+
+    param_array = np.array(
+        np.meshgrid(
+            delta_var, delta_var, sigma_array, operating_points,
+            indexing='ij'
+            )).T.reshape(
+                (operating_points.shape[0] * sigma_array.shape[0] * delta_var.shape[0]**2, 4))
+
+    start_index = job_index * delta_var.shape[0]**2
+    for i in range(21*21): 
+        local_params = {
+            'ed_point' : param_array[start_index + i][3],
+            'sigma' : param_array[start_index + i][2],
+            'delta1_var': param_array[start_index + i][1],
+            'delta2_var': param_array[start_index + i][0]
+        }
+        print(local_params)
+    trange, process_over_time = run_time_series(local_params)
+    return trange, process_over_time
+
+
+
+if __name__ == "__main__":
+    job_index = int(sys.argv[1])
