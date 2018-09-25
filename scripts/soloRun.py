@@ -37,7 +37,16 @@ def noise_sample(qubit, ded, time):
         return ChoiSimulation.chi_final_RF(time)
 
 def fourier_find_freq(noise_samples, chi_array):
-    import scipy.signal as sig
+    """
+    Find the peaks of the fft of the individual elements of the
+    chi_array
+    Inputs:
+      noise_samples: array of sampled dipolar detuning noise values
+      chi_array: array of resultant process matrices
+        shape: (9, 9, noise_samples.shape[0])
+    Outputs:
+      peak_freq: frequency of the single mode input
+    """
     dnoise = noise_samples[1] - noise_samples[0]
     chi_dim = chi_array.shape[0]
     freq = np.fft.fftfreq(noise_samples.shape[-1], d=dnoise)
@@ -46,14 +55,9 @@ def fourier_find_freq(noise_samples, chi_array):
         for j in range(chi_dim):
             data_y = chi_array[i, j, :]
             sp = np.fft.fft(data_y)
-            # peakindices = sig.argrelextrema(np.abs(sp.real), np.greater, order=100)
-            peakindices2 = sig.argrelextrema(np.abs(sp.imag), np.greater, order=100)
-            # peak1 = freq[peakindices]
-            # print(peak1)
-            peak2 = freq[peakindices2]
-            print(peak2)
-            if peak2.size != 0:
-                avgpeak = 0.5 * np.sum(np.abs(peak2))
+            peaks = np.where(np.abs(sp) > 10.0 * np.mean(np.abs(sp)))
+            if peaks.size != 0:
+                avgpeak = np.mean(np.abs(freq[peaks]))
                 peak_freq[i, j] = avgpeak        
     return peak_freq
 
