@@ -12,14 +12,14 @@ import numpy as np
 from soloRun import run_time_series
 
 
-def package_files(job_index, params, trange, process_array):
+def package_files(step, params, trange, process_array):
     """Package the information into a single .npz file 
     to be output"""
     ed = np.array(params['ed_point'])
     sigma = np.array(params['sigma'])
     delta1 = np.array(params['delta1_var'])
     delta2 = np.array(params['delta2_var'])
-    filename = '{0:02d}output.npz'.format(job_index)
+    filename = '{0:02d}output.npz'.format(step)
     np.savez(filename,
              ed=ed,
              sigma=sigma,
@@ -45,16 +45,15 @@ def runJob(job_index):
                 (operating_points.shape[0] * sigma_array.shape[0] * delta_var.shape[0]**2, 4))
 
     start_index = job_index * delta_var.shape[0]**2
-    for i in range(21*21): 
+    for step in range(21*21): 
         local_params = {
             'ed_point' : param_array[start_index + i][3],
             'sigma' : param_array[start_index + i][2],
             'delta1_var': param_array[start_index + i][1],
             'delta2_var': param_array[start_index + i][0]
         }
-        print(local_params)
         trange, process_over_time = run_time_series(local_params)
-        package_files(job_index, local_params, trange, process_over_time)
+        package_files(step, local_params, trange, process_over_time)
     return None
 
 
