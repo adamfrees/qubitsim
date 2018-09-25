@@ -46,8 +46,8 @@ def fourier_find_freq(noise_samples, chi_array):
         for j in range(chi_dim):
             data_y = chi_array[i, j, :]
             sp = np.fft.fft(data_y)
-            peakindices = sig.argrelextrema(np.abs(sp.real), np.greater, order=20)
-            peakindices2 = sig.argrelextrema(np.abs(sp.imag), np.greater, order=20)
+            peakindices = sig.argrelextrema(np.abs(sp.real), np.greater, order=40)
+            peakindices2 = sig.argrelextrema(np.abs(sp.imag), np.greater, order=40)
             peak1 = freq[peakindices]
             peak2 = freq[peakindices2]
             avgpeak = 0.25 * np.sum(np.abs(peak1 + peak2))
