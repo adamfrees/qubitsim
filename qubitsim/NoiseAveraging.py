@@ -58,6 +58,27 @@ def wing_doubling(original, sigma):
     new_array[len(start_double)+len(middle):] += finish_double
     return new_array
 
+def noise_testing(input_params):
+    ed = input_params['ed']
+    stsplitting = input_params['stsplitting']
+    delta1 = input_params['delta1']
+    delta2 = input_params['delta2']
+    tstep = input_params['tstep']
+    noise_samples = input_params['noise_samples']
+
+    indices = [0, 1]
+    qubit = hybrid.HybridQubit(ed, stsplitting, delta1, delta2)
+    H0 = np.diag(qubit.energies())
+    cj_array = np.zeros((9, 9, noise_samples.shape[0]), dtype=complex)
+
+    for i in range(noise_samples.shape[0]):
+        ded = noise_samples[i]
+        noise = qubit.detuning_noise_qubit(ded)
+        ChoiSimulation = cj.CJ(indices, H0, noise)
+        if tfinal == 0:
+            return ChoiSimulation.chi0
+        else:
+            return ChoiSimulation.chi_final_RF(tstep)
 
 
 def noise_sample_run(ded, tfinal):
