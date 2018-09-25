@@ -53,10 +53,13 @@ def runJob(job_index):
             'delta2_var': param_array[start_index + i][0]
         }
         print(local_params)
-    trange, process_over_time = run_time_series(local_params)
-    return trange, process_over_time
+        trange, process_over_time = run_time_series(local_params)
+        package_files(job_index, local_params, trange, process_over_time)
+    return None
 
 
 
 if __name__ == "__main__":
     job_index = int(sys.argv[1])
+    runJob(job_index)
+    
