@@ -153,8 +153,8 @@ def run_time_series(local_params):
                                delta2_var * delta2)
 
     tfinal = choosing_final_time(qubit, sigma)
-    trange1 = np.linspace(0, 0.1*tfinal, 100)
-    trange2 = np.linspace(0.1*tfinal, tfinal, 100)
+    trange1 = np.linspace(0, 0.2*tfinal, 100)
+    trange2 = np.linspace(0.2*tfinal, tfinal, 100)
     trange = np.unique(np.concatenate((trange1, trange2)))
     cj_array = np.empty((qubit.dim**2, qubit.dim**2, trange.shape[0]), dtype=complex)
     for i in range(trange.shape[0]):
