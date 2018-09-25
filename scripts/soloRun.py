@@ -132,7 +132,6 @@ def choosing_final_time(qubit, sigma):
     Gamma21 = (deriv1*sigma) / (math.sqrt(2))
     Gamma22 = (deriv2 * sigma**2) / (math.sqrt(2))
     Gamma23 = (deriv3 * sigma**3) / (math.sqrt(2))
-    print(Gamma21, Gamma22, Gamma23)
     return 1.0 / np.sum(np.array([Gamma21, Gamma22, Gamma23]))
 
 
@@ -159,7 +158,6 @@ def run_time_series(local_params):
     trange = np.unique(np.concatenate((trange1, trange2)))
     cj_array = np.empty((qubit.dim**2, qubit.dim**2, trange.shape[0]), dtype=complex)
     for i in range(trange.shape[0]):
-        print("Time step: {}, value: {}".format(i, trange[i]))
         if trange[i] == 0:
             cj_array[:, :, i] += noise_sample(qubit, 0.0, 0.0)
         else:
