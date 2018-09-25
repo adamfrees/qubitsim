@@ -75,10 +75,11 @@ def noise_testing(input_params):
         ded = noise_samples[i]
         noise = qubit.detuning_noise_qubit(ded)
         ChoiSimulation = cj.CJ(indices, H0, noise)
-        if tfinal == 0:
-            return ChoiSimulation.chi0
+        if tstep == 0:
+            cj_array[:, :, i] = ChoiSimulation.chi0
         else:
-            return ChoiSimulation.chi_final_RF(tstep)
+            cj_array[:, :, i] = ChoiSimulation.chi_final_RF(tstep)
+    return cj_array
 
 
 def noise_sample_run(ded, tfinal):
