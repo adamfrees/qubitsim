@@ -202,13 +202,14 @@ class SOSSHybrid(HybridQubit):
 
     def __init__(self, ed_ratio, matchfreq):
         from scipy.interpolate import interp1d
-        from os.path import join
+        from os import path
         self.ed_ratio = ed_ratio
         self.matchfreq = matchfreq
-        ed_ratio_array_ref = np.load(join('initdata', 'ed_ratio_ref.npy'))
-        stsplitting_array_ref = np.load(join('initdata', 'stsplitting_ref.npy'))
-        delta1_array_ref = np.load(join('initdata', 'delta1_ref.npy'))
-        delta2_array_ref = np.load(join('initdata', 'delta2_ref.npy'))
+        homedir = path.join(path.dirname(__file__), '..', '..', 'initdata')
+        ed_ratio_array_ref = np.load(path.join(homedir, 'ed_ratio_ref.npy'))
+        stsplitting_array_ref = np.load(path.join(homedir, 'stsplitting_ref.npy'))
+        delta1_array_ref = np.load(path.join(homedir, 'delta1_ref.npy'))
+        delta2_array_ref = np.load(path.join(homedir, 'delta2_ref.npy'))
 
         stsplitting_f = interp1d(ed_ratio_array_ref, stsplitting_array_ref)
         delta1_f = interp1d(ed_ratio_array_ref, delta1_array_ref)
