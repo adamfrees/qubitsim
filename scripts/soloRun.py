@@ -56,7 +56,7 @@ def fourier_find_freq(noise_samples, chi_array):
             data_y = chi_array[i, j, :]
             sp = np.fft.fft(data_y)
             peaks = np.where(np.abs(sp) > 10.0 * np.mean(np.abs(sp)))
-            if peaks.len() != 0:
+            if len(peaks) != 0:
                 avgpeak = np.mean(np.abs(freq[peaks]))
                 peak_freq[i, j] = avgpeak        
     return peak_freq
