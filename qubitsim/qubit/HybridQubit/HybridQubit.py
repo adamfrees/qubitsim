@@ -205,7 +205,7 @@ class SOSSHybrid(HybridQubit):
         from os import path
         self.ed_ratio = ed_ratio
         self.matchfreq = matchfreq
-        homedir = path.join(path.dirname(__file__), '..', '..', 'initdata')
+        homedir = path.join(path.dirname(__file__), '..', '..', '..', 'initdata')
         ed_ratio_array_ref = np.load(path.join(homedir, 'ed_ratio_ref.npy'))
         stsplitting_array_ref = np.load(path.join(homedir, 'stsplitting_ref.npy'))
         delta1_array_ref = np.load(path.join(homedir, 'delta1_ref.npy'))
