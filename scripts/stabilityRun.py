@@ -47,10 +47,10 @@ def runJob(job_index):
     start_index = job_index * delta_var.shape[0]**2
     for step in range(21*21): 
         local_params = {
-            'ed_point' : param_array[start_index + i][3],
-            'sigma' : param_array[start_index + i][2],
-            'delta1_var': param_array[start_index + i][1],
-            'delta2_var': param_array[start_index + i][0]
+            'ed_point' : param_array[start_index + step][3],
+            'sigma' : param_array[start_index + step][2],
+            'delta1_var': param_array[start_index + step][1],
+            'delta2_var': param_array[start_index + step][0]
         }
         trange, process_over_time = run_time_series(local_params)
         package_files(step, local_params, trange, process_over_time)
