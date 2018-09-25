@@ -96,7 +96,7 @@ def average_process(qubit, time, sigma):
     Outputs:
       cj_array: ((9, 9, len(noise_samples))) array of process matrices.
     """
-    max_noise = max_noise = 2*math.pi*5.0 / (time)
+    max_noise = 2.0 / (time)
     noise_samples = np.linspace(-max_noise, max_noise, 8193)
     noise_dim = noise_samples.shape[0]
     cj_array = np.zeros((9, 9, noise_dim), dtype=complex)
