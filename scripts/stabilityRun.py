@@ -76,7 +76,7 @@ def runSingleVaryJob(job_index):
     param_array1 = np.array(
         np.meshgrid(
             sigma_array, operating_points, indexing='ij')
-            ).T.reshape((operating_points.shape[0]*sigma_array.shape[0], 4))
+            ).T.reshape((operating_points.shape[0]*sigma_array.shape[0], 2))
 
     # Create an array of tunnel coupling values to iterate over
     # Vary delta1, then vary delta2
