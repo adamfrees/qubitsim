@@ -51,7 +51,7 @@ def runMultivaryJob(job_index):
         local_params = {
             'ed_point' : param_array[start_index + step, 3],
             'sigma' : param_array[start_index + step, 2],
-            'delta1_var': param_array[start_index + step, 1]
+            'delta1_var': param_array[start_index + step, 1],
             'delta2_var': param_array[start_index + step, 0]
         }
         trange, process_over_time = run_time_series(local_params)
