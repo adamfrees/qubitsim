@@ -88,8 +88,8 @@ def runSingleVaryJob(job_index):
         local_params = {
             'ed_point' : param_array1[job_index][2],
             'sigma' : param_array1[job_index][0],
-            'delta1_var': delta_array[step, 0]
-            'delta2_var': param_array[step, 1]
+            'delta1_var': delta_array[step, 0],
+            'delta2_var': delta_array[step, 1]
         }
         trange, process_over_time = run_time_series(local_params)
         package_files(step, local_params, trange, process_over_time)
