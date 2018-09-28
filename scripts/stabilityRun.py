@@ -84,7 +84,7 @@ def runSingleVaryJob(job_index):
     delta_array[:delta_var.shape[0], :] = np.array([delta_var, np.ones(delta_var.shape[0])]).T
     delta_array[delta_var.shape[0]:, :] = np.array([np.ones(delta_var.shape[0]), delta_var]).T
 
-    for step in range(2*delta_var.shapep[0]): 
+    for step in range(2*delta_var.shape[0]): 
         local_params = {
             'ed_point' : param_array1[job_index][2],
             'sigma' : param_array1[job_index][0],
