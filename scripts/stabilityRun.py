@@ -86,8 +86,8 @@ def runSingleVaryJob(job_index):
 
     for step in range(2*delta_var.shape[0]): 
         local_params = {
-            'ed_point' : param_array1[job_index][2],
-            'sigma' : param_array1[job_index][0],
+            'ed_point' : param_array1[job_index, 1],
+            'sigma' : param_array1[job_index, 0],
             'delta1_var': delta_array[step, 0],
             'delta2_var': delta_array[step, 1]
         }
