@@ -87,7 +87,7 @@ def process_chi_array(noise_samples, chi_array):
                 expPhase[i, j] = (zeroValue[i, j] - offset[i, j]) / amplitude[i, j]
 
     peak_freq = fourier_find_freq(noise_samples, chi_array)  
-    return amplitude, offset, expPhase, peak_freq
+    return amplitude, offset, peak_freq, expPhase
 
 
 def average_process(qubit, time, sigma):
@@ -108,7 +108,7 @@ def average_process(qubit, time, sigma):
         ded = noise_samples[i]
         cj_array[:, :, i] += noise_sample(qubit, ded, time)
     
-    amplitude, offset, expPhase, peakFreq = process_chi_array(noise_samples, cj_array)
+    amplitude, offset, peakFreq, expPhase = process_chi_array(noise_samples, cj_array)
     return norm_sin_integral(amplitude, offset, peakFreq, expPhase, sigma)
 
 
