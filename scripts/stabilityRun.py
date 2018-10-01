@@ -96,6 +96,35 @@ def runSingleVaryJob(job_index):
     return None
 
 
+    def runSingleTestJob(job_index):
+        """
+        Run a single job with ideal tunnel couplings
+        """
+        operating_points = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+        ueV_conversion = 0.241799050402417
+        sigma = 5.0 * ueV_conversion
+        # sigma_array = np.array([1.0, 5.0, 10.0]) * ueV_conversion
+
+        # Complicated way of translating the job_index to the 
+        # appropriate operating point and noise value
+        param_array1 = np.array(
+            np.meshgrid(
+                sigma_array, operating_points, indexing='ij')
+                ).T.reshape((operating_points.shape[0]*sigma_array.shape[0], 2))
+
+
+        local_params = {
+            'ed_point' : operating_points[job_index],
+            'sigma' : sigma,
+            'delta1_var': 1.0,
+            'delta2_var': 1.0
+            }
+            trange, process_over_time = run_time_series(local_params)
+            package_files(step, local_params, trange, process_over_time)
+        return None
+
+
+
 
 if __name__ == "__main__":
     job_index = int(sys.argv[1])
