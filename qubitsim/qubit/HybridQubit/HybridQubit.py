@@ -209,27 +209,22 @@ class SOSSHybrid(HybridQubit):
 
 
     def __init__(self, ed_ratio, matchfreq):
-        # from scipy.interpolate import interp1d
-        # from os import path
+        """
+        Create a SOSS hybrid qubit object. It inherits all hybrid qubit
+        class methods and has the additional specifications of a particular
+        operating point in detuning space and the frequency must match the 
+        given value.
+
+        Inputs:
+          ed_ratio: ed / stsplitting, the operating point in detuning space
+          matchfreq: the specified qubit frequency
+        """ 
         self.ed_ratio = ed_ratio
         self.matchfreq = matchfreq
-        # homedir = path.join(path.dirname(__file__), '..', '..', '..', 'initdata')
-        # ed_ratio_array_ref = np.load(path.join(homedir, 'ed_ratio_ref.npy'))
-        # stsplitting_array_ref = np.load(path.join(homedir, 'stsplitting_ref.npy'))
-        # delta1_array_ref = np.load(path.join(homedir, 'delta1_ref.npy'))
-        # delta2_array_ref = np.load(path.join(homedir, 'delta2_ref.npy'))
-
-        # stsplitting_f = interp1d(ed_ratio_array_ref, stsplitting_array_ref)
-        # delta1_f = interp1d(ed_ratio_array_ref, delta1_array_ref)
-        # delta2_f = interp1d(ed_ratio_array_ref, delta2_array_ref)
 
         guess = [0.7 * matchfreq, 0.7 * matchfreq, matchfreq]
         delta1, delta2, stsplitting = SOSSHybrid.__find_sweet_spot(guess, ed_ratio, matchfreq)
         ed = ed_ratio.stsplitting
-        # stsplitting = (matchfreq / 10.0) * stsplitting_f(ed_ratio)
-        # ed = stsplitting * ed_ratio
-        # delta1 = delta1_f(ed_ratio)
-        # delta2 = delta2_f(ed_ratio)
         super().__init__(ed, stsplitting, delta1, delta2)
 
 
