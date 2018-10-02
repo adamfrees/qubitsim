@@ -81,6 +81,23 @@ class HybridQubit(object):
                        [self.delta1, -self.delta2, 0.5*self.ed]])
         return 2 * math.pi * H0
 
+
+    def c_detune_qubit_splitting(self, deviation):
+        """
+        From the base hamiltonian, find the complex form of the qubit's 
+        energy resulting from a complex deviation in the detuning.
+
+        Inputs:
+          deviation: a complex quantitity
+        Outputs:
+          Complex energy with each component in GHz
+        """
+        Hbase = self.hamiltonian_lab() / (2*math.pi)
+        Hdeviation = deviation * np.diag([-0.5, -0.5, 0.5])
+        evals = np.sort(LA.eigvals(Hbase + Hdeviation))
+        return evals[1] - evals[0]
+
+        
     def qubit_basis(self):
         """
         Return the qubit eigenbasis
@@ -153,7 +170,10 @@ class HybridQubit(object):
 
     def splitting_derivative(self, order):
         """Calculate the nth-derivative of the qubit 
-        splitting in GHz.
+        splitting in GHz. The derivative methods 
+        below rely on complex step derivatives for greater 
+        accuracy.
+
         Inputs:
           order: order of the derivative
         Outputs:
@@ -180,7 +200,7 @@ class HybridQubit(object):
                                     qp1.qubit_splitting(),
                                     qp2.qubit_splitting(), qp3.qubit_splitting()]) / (2*math.pi)
         if order == 1:
-            step = 5e-3
+            step = 1e-8
             coeff_list = np.array([-1/60, 3/20, -3/4, 0, 3/4, -3/20, 1/60])
         elif order == 2:
             step = 5e-3
