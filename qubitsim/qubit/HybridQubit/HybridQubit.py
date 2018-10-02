@@ -209,22 +209,78 @@ class SOSSHybrid(HybridQubit):
 
 
     def __init__(self, ed_ratio, matchfreq):
-        from scipy.interpolate import interp1d
-        from os import path
+        # from scipy.interpolate import interp1d
+        # from os import path
         self.ed_ratio = ed_ratio
         self.matchfreq = matchfreq
-        homedir = path.join(path.dirname(__file__), '..', '..', '..', 'initdata')
-        ed_ratio_array_ref = np.load(path.join(homedir, 'ed_ratio_ref.npy'))
-        stsplitting_array_ref = np.load(path.join(homedir, 'stsplitting_ref.npy'))
-        delta1_array_ref = np.load(path.join(homedir, 'delta1_ref.npy'))
-        delta2_array_ref = np.load(path.join(homedir, 'delta2_ref.npy'))
+        # homedir = path.join(path.dirname(__file__), '..', '..', '..', 'initdata')
+        # ed_ratio_array_ref = np.load(path.join(homedir, 'ed_ratio_ref.npy'))
+        # stsplitting_array_ref = np.load(path.join(homedir, 'stsplitting_ref.npy'))
+        # delta1_array_ref = np.load(path.join(homedir, 'delta1_ref.npy'))
+        # delta2_array_ref = np.load(path.join(homedir, 'delta2_ref.npy'))
 
-        stsplitting_f = interp1d(ed_ratio_array_ref, stsplitting_array_ref)
-        delta1_f = interp1d(ed_ratio_array_ref, delta1_array_ref)
-        delta2_f = interp1d(ed_ratio_array_ref, delta2_array_ref)
+        # stsplitting_f = interp1d(ed_ratio_array_ref, stsplitting_array_ref)
+        # delta1_f = interp1d(ed_ratio_array_ref, delta1_array_ref)
+        # delta2_f = interp1d(ed_ratio_array_ref, delta2_array_ref)
 
-        stsplitting = (matchfreq / 10.0) * stsplitting_f(ed_ratio)
-        ed = stsplitting * ed_ratio
-        delta1 = delta1_f(ed_ratio)
-        delta2 = delta2_f(ed_ratio)
+        guess = [0.7 * matchfreq, 0.7 * matchfreq, matchfreq]
+        delta1, delta2, stsplitting = SOSSHybrid.__find_sweet_spot(guess, ed_ratio, matchfreq)
+        ed = ed_ratio.stsplitting
+        # stsplitting = (matchfreq / 10.0) * stsplitting_f(ed_ratio)
+        # ed = stsplitting * ed_ratio
+        # delta1 = delta1_f(ed_ratio)
+        # delta2 = delta2_f(ed_ratio)
         super().__init__(ed, stsplitting, delta1, delta2)
+
+
+    @staticmethod
+    def __conditions(vector_x, operating_ratio, res_freq):
+        """
+        This function calculates the required values that 
+        need to be zero for the SOSS qubit
+
+        Inputs:
+          vector_x: [delta1, delta2, stsplitting]
+          operating_ratio: ed / stsplitting used for operation
+          res_freq: qubit frequency to match
+        Output:
+          [resonance, D1, D2]
+          resonance: need to match the given frequency
+          D1: first derivative of qubit spectrum
+          D2: second derivative of qubit spectrum
+        """
+        delta1, delta2, stsplitting = vector_x
+        ref_qubit = super().__init__(operating_ratio * stsplitting,
+                                     stsplitting,
+                                     delta1,
+                                     delta2)
+        resonance = res_freq - ref_qubit.qubit_splitting() / (2*math.pi)
+        D1 = ref_qubit.splitting_derivative(1)
+        D2 = ref_qubit.splitting_derivative(2)
+        return [resonance, D1, D2]
+
+
+    @staticmethod
+    def __find_sweet_spot(guess, operating_ratio, res_freq):
+        """
+        This method uses the hybrid method and 
+        scipy.optimize.root to find the values of 
+        delta1, delta2, and stsplitting that result in a 
+        second order sweet spot (SOSS).
+
+        Inputs:
+          guess: [delta1, delta2, stsplitting]
+            a guess for the starting values
+          operating_ratio:  ed / stsplitting for operation
+          res_freq: the required qubit frequency
+        Ouputs:
+          tunings: [delta1, delta2, stsplitting]
+          The values found by root to be a SOSS
+        """
+        from scipy.optimize import root
+        tunings = root(SOSSHybrid.__conditions,
+                   guess,
+                   args=(operating_ratio, res_freq),
+                   method='hybr', tol=1e-8,
+                   options = {'eps': 1e-6}).x
+        return tunings
