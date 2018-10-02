@@ -182,9 +182,11 @@ class HybridQubit(object):
         """
         
         if order == 1:
-            step = 1e-9
-            # coeff_list = np.array([-1/60, 3/20, -3/4, 0, 3/4, -3/20, 1/60])
-            return np.imag(self.c_detune_qubit_splitting(step)) / step
+            step = 1e-10
+            c_num = step * (1 + 1.j) / math.sqrt(2)
+            eval1 = self.c_detune_qubit_splitting(c_num)
+            eval2 = self.c_detune_qubit_splitting(-c_num)
+            return np.imag(eval1 - eval2) / (step * math.sqrt(2))
         elif order == 2:
             step = 1e-8
             c_num = step * (1 + 1.j) / math.sqrt(2)
