@@ -180,26 +180,7 @@ class HybridQubit(object):
         Outputs:
           d^n / d omega^n in (GHz^-(n-1))
         """
-        step = 5e-3
-
-        qm3 = HybridQubit(self.ed - 3 * step, self.stsplitting,
-                          self.delta1, self.delta2)
-        qm2 = HybridQubit(self.ed - 2 * step, self.stsplitting,
-                          self.delta1, self.delta2)
-        qm1 = HybridQubit(self.ed - 1 * step, self.stsplitting,
-                          self.delta1, self.delta2)
-        qp1 = HybridQubit(self.ed + 1 * step, self.stsplitting,
-                          self.delta1, self.delta2)
-        qp2 = HybridQubit(self.ed + 2 * step, self.stsplitting,
-                          self.delta1, self.delta2)
-        qp3 = HybridQubit(self.ed + 3 * step, self.stsplitting,
-                          self.delta1, self.delta2)
-
-        splitting_array = np.array([qm3.qubit_splitting(), qm2.qubit_splitting(),
-                                    qm1.qubit_splitting(),
-                                    self.qubit_splitting(),
-                                    qp1.qubit_splitting(),
-                                    qp2.qubit_splitting(), qp3.qubit_splitting()]) / (2*math.pi)
+        
         if order == 1:
             step = 1e-7
             # coeff_list = np.array([-1/60, 3/20, -3/4, 0, 3/4, -3/20, 1/60])
