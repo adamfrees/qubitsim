@@ -201,13 +201,15 @@ class HybridQubit(object):
                                     qp1.qubit_splitting(),
                                     qp2.qubit_splitting(), qp3.qubit_splitting()]) / (2*math.pi)
         if order == 1:
-            step = 1e-8
+            step = 1e-7
             # coeff_list = np.array([-1/60, 3/20, -3/4, 0, 3/4, -3/20, 1/60])
             return np.imag(self.c_detune_qubit_splitting(step)) / step
         elif order == 2:
-            step = 5e-3
-            coeff_list = np.array([1/90, -3/20, 3/2, -49/18, 3/2, -3/20, 1/90])
-            return np.dot(splitting_array, coeff_list) / (step ** order)
+            step = 1e-6
+            c_num = step * (1 + 1.j) / math.sqrt(2)
+            eval1 = self.c_detune_qubit_splitting(c_num)
+            eval2 = self.c_detune_qubit_splitting(-c_num)
+            return np.imag(eval1 - eval2) / step**2
         elif order == 3:
             step = 5e-3
             coeff_list = np.array([1/8, -1, 13/8, 0, -13/8, 1, -1/8])
