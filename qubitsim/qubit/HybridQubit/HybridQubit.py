@@ -97,7 +97,7 @@ class HybridQubit(object):
         evals = np.sort(LA.eigvals(Hbase + Hdeviation))
         return evals[1] - evals[0]
 
-        
+
     def qubit_basis(self):
         """
         Return the qubit eigenbasis
@@ -131,6 +131,7 @@ class HybridQubit(object):
         Return an array of system energies in angular GHz
         """
         return LA.eigvalsh(self.hamiltonian_lab())
+
 
     def qubit_splitting(self):
         """
@@ -201,18 +202,18 @@ class HybridQubit(object):
                                     qp2.qubit_splitting(), qp3.qubit_splitting()]) / (2*math.pi)
         if order == 1:
             step = 1e-8
-            coeff_list = np.array([-1/60, 3/20, -3/4, 0, 3/4, -3/20, 1/60])
+            # coeff_list = np.array([-1/60, 3/20, -3/4, 0, 3/4, -3/20, 1/60])
+            return np.imag(self.c_detune_qubit_splitting(step)) / step
         elif order == 2:
             step = 5e-3
             coeff_list = np.array([1/90, -3/20, 3/2, -49/18, 3/2, -3/20, 1/90])
+            return np.dot(splitting_array, coeff_list) / (step ** order)
         elif order == 3:
             step = 5e-3
             coeff_list = np.array([1/8, -1, 13/8, 0, -13/8, 1, -1/8])
+            return np.dot(splitting_array, coeff_list) / (step ** order)
         else:
-            pass
-        
-        return np.dot(splitting_array, coeff_list) / (step ** order)
-
+            return None
 
 
 class SOSSHybrid(HybridQubit):
