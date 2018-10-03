@@ -247,5 +247,6 @@ class SOSSHybrid(HybridQubit):
                    guess,
                    args=(operating_ratio, res_freq),
                    method='hybr', tol=1e-8,
-                   options = {'eps': 1e-6}).x
+                   options = {'eps': 1e-6,
+                              'factor': 10}).x
         return tunings
