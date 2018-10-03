@@ -20,6 +20,7 @@ class HybridQubit(object):
 
         Also creates a dimension property that is accessible
         """
+        __slots__ = 'ed', 'stsplitting', 'delta1', 'delta2'
         self.ed = ed
         self.stsplitting = stsplitting
         self.delta1 = delta1
@@ -183,7 +184,8 @@ class SOSSHybrid(HybridQubit):
         Inputs:
           ed_ratio: ed / stsplitting, the operating point in detuning space
           matchfreq: the specified qubit frequency
-        """ 
+        """
+        __slots__ = 'ed_ratio', 'matchfreq'
         self.ed_ratio = ed_ratio
         self.matchfreq = matchfreq
 
