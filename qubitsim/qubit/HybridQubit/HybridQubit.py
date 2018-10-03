@@ -4,52 +4,6 @@ import math
 import numpy as np
 import scipy.linalg as LA
 
-def eigvector_phase_sort(eig_matrix):
-    for i in range(eig_matrix.shape[1]):
-        if eig_matrix[0, i] < 0:
-            eig_matrix[:, i] *= -1
-    return eig_matrix
-
-def second_order_sweet_spot_match_finder(fit_params_init, operating_point, matchfreq):
-    """
-    Find the required parameter tunings to meet the second-order sweet spot condition.
-    Inputs:
-      fit_params_init: array containing:
-        stsplitting (GHz)
-        delta1 (GHz)
-        delta2 (GHz)
-      operating_point : value of detuning / stsplitting
-      matchfreq : qubit frequency to match
-    """
-
-    from scipy.optimize import root
-
-    def soss_helper(fit_params, operating_point, matchfreq):
-        stsplitting, delta1, delta2 = fit_params
-        h = 1e-8 * stsplitting
-        ed = operating_point * stsplitting
-        base_qubit = HybridQubit(ed, stsplitting, delta1, delta2)
-        test_array = np.array(
-            [HybridQubit(ed-2*h, stsplitting, delta1, delta2).qubit_splitting(),
-             HybridQubit(ed-h, stsplitting, delta1, delta2).qubit_splitting(),
-             base_qubit.qubit_splitting(),
-             HybridQubit(ed+h, stsplitting, delta1, delta2).qubit_splitting(),
-             HybridQubit(ed+2*h, stsplitting, delta1, delta2).qubit_splitting()]) / (2*math.pi)
-        coeff_array1 = np.array([1/12, -2/3, 0, 2/3, -1/12])
-        coeff_array2 = np.array([-1/12, 4/3, -5/2, 4/3, -1/12])
-        deriv1 = np.dot(coeff_array1, test_array) / h
-        deriv2 = np.dot(coeff_array2, test_array) / h**2
-        # deriv1 = qmf.derivative(qubit.energy_detuning, ed, 1) / (2*math.pi)
-        # deriv2 = qmf.derivative(qubit.energy_detuning, ed, 2) / (2*math.pi)
-        resonance = np.abs(base_qubit.qubit_splitting()/(2*math.pi) - matchfreq)
-        return [deriv1, deriv2, resonance]
-    tunings = root(soss_helper,
-                   fit_params_init,
-                   args=(operating_point, matchfreq),
-                   method='hybr', tol=1e-8,
-                   options = {'eps': 1e-6}).x
-    return tunings
-
 
 class HybridQubit(object):
     """
@@ -103,7 +57,7 @@ class HybridQubit(object):
         Return the qubit eigenbasis
         """
         evecs = LA.eigh(self.hamiltonian_lab())[1]
-        evecs = eigvector_phase_sort(evecs)
+        evecs = HybridQubit.eigvector_phase_sort(evecs)
         return evecs
 
     def energy_detuning(self, detuning):
@@ -203,6 +157,15 @@ class HybridQubit(object):
             return math.sqrt(2)*np.imag(eval1 - 2*eval2 + 2*eval3 - eval4)
         else:
             return None
+
+
+    @staticmethod
+    def eigvector_phase_sort(eig_matrix):
+        for i in range(eig_matrix.shape[1]):
+            if eig_matrix[0, i] < 0:
+                eig_matrix[:, i] *= -1
+        return eig_matrix
+
 
 
 class SOSSHybrid(HybridQubit):
