@@ -210,10 +210,10 @@ class SOSSHybrid(HybridQubit):
           D2: second derivative of qubit spectrum
         """
         delta1, delta2, stsplitting = vector_x
-        ref_qubit = super().__init__(operating_ratio * stsplitting,
-                                     stsplitting,
-                                     delta1,
-                                     delta2)
+        ref_qubit = super(SOSSHybrid).__init__(operating_ratio * stsplitting,
+                                               stsplitting,
+                                               delta1,
+                                               delta2)
         resonance = res_freq - ref_qubit.qubit_splitting() / (2*math.pi)
         D1 = ref_qubit.splitting_derivative(1)
         D2 = ref_qubit.splitting_derivative(2)
