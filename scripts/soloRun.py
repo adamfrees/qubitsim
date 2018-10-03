@@ -131,6 +131,20 @@ def choosing_final_time(qubit, sigma):
         return gamma_final_time
 
 
+def generate_trange(tmax):
+    """
+    Helper function to generate a correct time range
+    Only worried about order of magnitude precision
+    """
+    max_exp = int(math.ceil(math.log10(tmax)))
+    max_range = int(max_exp * 100)
+    trange = np.zeros((max_range))
+    for i in range(1, max_exp+1):
+        local_range = np.linspace(10**(i-1), 10**i, 100)
+        trange[100*(i-1):100*(i)] = local_range
+    return trange
+
+
 def run_time_series(local_params):
     operating_point = local_params['ed_point']
     delta1_var = local_params['delta1_var']
@@ -149,9 +163,7 @@ def run_time_series(local_params):
                                delta2_var * delta2)
 
     tfinal = choosing_final_time(qubit, sigma)
-    trange1 = np.linspace(0, 0.2*tfinal, 100)
-    trange2 = np.linspace(0.2*tfinal, tfinal, 100)
-    trange = np.unique(np.concatenate((trange1, trange2)))
+    trange = generate_trange(tfinal)
     cj_array = np.empty((qubit.dim**2, qubit.dim**2, trange.shape[0]), dtype=complex)
     for i in range(trange.shape[0]):
         if trange[i] == 0:
