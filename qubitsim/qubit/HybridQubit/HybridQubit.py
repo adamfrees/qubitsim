@@ -173,7 +173,7 @@ class SOSSHybrid(HybridQubit):
     resonant at some given frequency"""
 
 
-    def __init__(self, ed_ratio, matchfreq):
+    def __init__(self, ed_ratio, matchfreq, guess=None):
         """
         Create a SOSS hybrid qubit object. It inherits all hybrid qubit
         class methods and has the additional specifications of a particular
@@ -187,9 +187,11 @@ class SOSSHybrid(HybridQubit):
         self.ed_ratio = ed_ratio
         self.matchfreq = matchfreq
 
-        guess = [0.7 * matchfreq, 0.7 * matchfreq, matchfreq]
+        if guess==None:
+            guess = [0.7 * matchfreq, 0.7 * matchfreq, matchfreq]
+        
         delta1, delta2, stsplitting = SOSSHybrid.__find_sweet_spot(guess, ed_ratio, matchfreq)
-        ed = ed_ratio.stsplitting
+        ed = ed_ratio * stsplitting
         super().__init__(ed, stsplitting, delta1, delta2)
 
 
@@ -210,10 +212,10 @@ class SOSSHybrid(HybridQubit):
           D2: second derivative of qubit spectrum
         """
         delta1, delta2, stsplitting = vector_x
-        ref_qubit = super(SOSSHybrid).__init__(operating_ratio * stsplitting,
-                                               stsplitting,
-                                               delta1,
-                                               delta2)
+        ref_qubit = HybridQubit(operating_ratio * stsplitting,
+                                stsplitting,
+                                delta1,
+                                delta2)
         resonance = res_freq - ref_qubit.qubit_splitting() / (2*math.pi)
         D1 = ref_qubit.splitting_derivative(1)
         D2 = ref_qubit.splitting_derivative(2)
@@ -231,8 +233,9 @@ class SOSSHybrid(HybridQubit):
         Inputs:
           guess: [delta1, delta2, stsplitting]
             a guess for the starting values
-          operating_ratio:  ed / stsplitting for operation
-          res_freq: the required qubit frequency
+          args: tuple containing
+            operating_ratio:  ed / stsplitting for operation
+            res_freq: the required qubit frequency
         Ouputs:
           tunings: [delta1, delta2, stsplitting]
           The values found by root to be a SOSS
