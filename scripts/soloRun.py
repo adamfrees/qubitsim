@@ -115,31 +115,20 @@ def average_process(qubit, time, sigma):
 def choosing_final_time(qubit, sigma):
     """ Function to make a guess at the final time required 
     for estimating decoherence"""
-    h = 1e-3
-    coeff_array1 = np.array([1/12, -2/3, 0, 2/3, -1/12])
-    coeff_array2 = np.array([-1/12, 4/3, -5/2, 4/3, -1/12])
-    coeff_array3 = np.array([-1/2, 1, 0, -1, 1/2])
 
-    ed = qubit.ed
-    stsplitting = qubit.stsplitting
-    delta1 = qubit.delta1
-    delta2 = qubit.delta2
-
-    qsm2 = hybrid.HybridQubit(ed - 2*h, stsplitting, delta1, delta2).qubit_splitting()
-    qsm1 = hybrid.HybridQubit(ed - h, stsplitting, delta1, delta2).qubit_splitting()
-    qsp1 = hybrid.HybridQubit(ed + h, stsplitting, delta1, delta2).qubit_splitting()
-    qsp2 = hybrid.HybridQubit(ed + 2*h, stsplitting, delta1, delta2).qubit_splitting()
-
-    sample_array = np.array([qsm2, qsm1, qubit.qubit_splitting(), qsp1, qsp2]) / (2*math.pi)
-
-    deriv1 = np.abs(np.dot(sample_array, coeff_array1))
-    deriv2 = np.abs(np.dot(sample_array, coeff_array2))
-    deriv3 = np.abs(np.dot(sample_array, coeff_array3))
+    deriv1 = np.abs(qubit.splitting_derivative(1)) / (2*math.pi)
+    deriv2 = np.abs(qubit.splitting_derivative(2)) / (2*math.pi)
+    deriv3 = np.abs(qubit.splitting_derivative(3)) / (2*math.pi)
 
     Gamma21 = (deriv1*sigma) / (math.sqrt(2))
     Gamma22 = (deriv2 * sigma**2) / (math.sqrt(2))
     Gamma23 = (deriv3 * sigma**3) / (math.sqrt(2))
-    return 1.0 / np.sum(np.array([Gamma21, Gamma22, Gamma23]))
+    gamma_final_time = 1.0 / (np.sum(np.array([Gamma21, Gamma22, Gamma23])))
+    
+    if gamma_final_time > 5e5:
+        return 5e5
+    else:
+        return gamma_final_time
 
 
 def run_time_series(local_params):
