@@ -96,6 +96,31 @@ def runSingleVaryJob(job_index):
     return None
 
 
+def atomistic_job(job_index):
+    """
+    Run a single ed, sigma, delta1, delta2 setting for the qubit
+    """
+    operating_points = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+    delta_var = np.linspace(0.95, 1.05, 11)
+    ueV_conversion = 0.241799050402417
+    sigma_array = np.array([1.0, 5.0, 10.0]) * ueV_conversion
+
+    param_array = np.array(
+        np.meshgrid(
+            delta_var, delta_var, sigma_array, operating_points,
+            indexing='ij'
+            )).T.reshape(
+                (operating_points.shape[0] * sigma_array.shape[0] * delta_var.shape[0]**2, 4))
+    local_params = {
+        'ed_point' : param_array[job_index, 3],
+        'sigma' : param_array[job_index, 2],
+        'delta1_var': param_array[job_index, 1],
+        'delta2_var': param_array[job_index, 0]
+    }
+    trange, process_over_time = run_time_series(local_params)
+    package_files(job_index, local_params, trange, process_over_time)
+    return None
+
 def runSingleTestJob(job_index):
     """
     Run a single job with ideal tunnel couplings
@@ -120,5 +145,5 @@ def runSingleTestJob(job_index):
 
 if __name__ == "__main__":
     job_index = int(sys.argv[1])
-    runSingleVaryJob(job_index)
+    atomistic_job(job_index)
     
