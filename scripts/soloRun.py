@@ -137,10 +137,10 @@ def generate_trange(tmax):
     Only worried about order of magnitude precision
     """
     max_exp = int(math.ceil(math.log10(tmax)))
-    max_range = int(max_exp * 100)
+    max_range = int(max_exp * 10)
     trange = np.zeros((max_range))
     for i in range(1, max_exp+1):
-        local_range = np.linspace(10**(i-1), 10**i, 100)
+        local_range = np.linspace(10**(i-1), 10**i, 10)
         trange[100*(i-1):100*(i)] = local_range
     return trange
 
