@@ -105,17 +105,19 @@ def atomistic_job(job_index):
     ueV_conversion = 0.241799050402417
     sigma_array = np.array([1.0, 5.0, 10.0]) * ueV_conversion
 
-    param_array = np.array(
-        np.meshgrid(
-            delta_var, delta_var, sigma_array, operating_points,
-            indexing='ij'
-            )).T.reshape(
-                (operating_points.shape[0] * sigma_array.shape[0] * delta_var.shape[0]**2, 4))
+    op_index = job_index % (len(sigma_array) * len(delta_var)**2)
+    new_index = job_index - op_index*(len(sigma_array) * len(delta_var)**2)
+    sigma_index = new_index % (len(delta_var)**2)
+    new_index = new_index - sigma_index * (len(delta_var)**2)
+    delta1_index = new_index % len(delta_var)
+    new_index = new_index - delta1_index*len(delta_var)
+    delta2_index = new_index
+
     local_params = {
-        'ed_point' : param_array[job_index, 3],
-        'sigma' : param_array[job_index, 2],
-        'delta1_var': param_array[job_index, 1],
-        'delta2_var': param_array[job_index, 0]
+        'ed_point' : operating_points[op_index],
+        'sigma' :    sigma_array[sigma_index],
+        'delta1_var': delta_var[delta1_index],
+        'delta2_var': delta_var[delta2_index]
     }
     trange, process_over_time = run_time_series(local_params)
     package_files(job_index, local_params, trange, process_over_time)
