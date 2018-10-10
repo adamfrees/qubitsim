@@ -136,12 +136,13 @@ def generate_trange(tmax):
     Helper function to generate a correct time range
     Only worried about order of magnitude precision
     """
+    subdim = 10
     max_exp = int(math.ceil(math.log10(tmax)))
-    max_range = int(max_exp * 10)
+    max_range = int(max_exp * subdim)
     trange = np.zeros((max_range))
     for i in range(1, max_exp+1):
         local_range = np.linspace(10**(i-1), 10**i, 10)
-        trange[100*(i-1):100*(i)] = local_range
+        trange[subdim*(i-1):subdim*(i)] = local_range
     return trange
 
 
