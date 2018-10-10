@@ -105,13 +105,12 @@ def atomistic_job(job_index):
     ueV_conversion = 0.241799050402417
     sigma_array = np.array([1.0, 5.0, 10.0]) * ueV_conversion
 
-    op_index = job_index % (len(sigma_array) * len(delta_var)**2)
-    new_index = job_index - op_index*(len(sigma_array) * len(delta_var)**2)
-    sigma_index = new_index % (len(delta_var)**2)
-    new_index = new_index - sigma_index * (len(delta_var)**2)
-    delta1_index = new_index % len(delta_var)
-    new_index = new_index - delta1_index*len(delta_var)
-    delta2_index = new_index
+    indices = np.unravel_index(job_index, 
+        (len(operating_points, len(sigma_array), len(delta_var), len(delta_var))))
+    op_index = indices[0]
+    sigma_index = indices[1]
+    delta1_index = indices[2]
+    delta2_index = indices[3]
 
     local_params = {
         'ed_point' : operating_points[op_index],
