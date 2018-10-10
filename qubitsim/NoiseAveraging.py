@@ -32,7 +32,18 @@ def even_area_sampling(nsamples, sigma):
     return samples[1:-1]
 
 def noise_doubling(original):
-    """Bisect an original sample given"""
+    """
+    Bisect an original sample given
+    
+    Parameters
+    ----------
+    original : float array
+    
+    Returns
+    -------
+    float array
+        return array that constitutes a bisection of the original
+    """
     new_samples = 0.5 * np.diff(original) + original[:-1]
     full_array = np.zeros((original.size + new_samples.size,), dtype=original.dtype)
     full_array[0::2] = original
@@ -71,6 +82,7 @@ def wing_doubling(original, sigma):
     new_array[len(start_double):len(start_double)+len(middle)] += original[middle]
     new_array[len(start_double)+len(middle):] += finish_double
     return new_array
+
 
 def noise_testing(input_params):
     ed = input_params['ed']
@@ -137,8 +149,7 @@ def noise_averaging(x, noise_samples, cj_array):
 
 def simple_noise_sampling(tfinal, samples0):
     """
-    This algorithm will start with
-    a coarse noise sample and will progressively 
+    This algorithm will start with a coarse noise sample and will progressively 
     refine the sample until convergence is found
     """
     from scipy.linalg import sqrtm
@@ -173,8 +184,7 @@ def simple_noise_sampling(tfinal, samples0):
 
 def even_area_noise_sampling(tfinal, samples0):
     """
-    This algorithm will start with
-    a coarse noise sample and will progressively 
+    This algorithm will start with a coarse noise sample and will progressively 
     refine the sample until convergence is found
     """
     from scipy.linalg import sqrtm
@@ -215,8 +225,23 @@ def bare_time_evolution():
 
 
 def choosing_final_time(qubit, sigma):
-    """ Function to make a guess at the final time required 
-    for estimating decoherence"""
+    """
+    Function to make a guess at the final time required 
+    for estimating decoherence
+
+    Parameters
+    ----------
+    qubit : HybridQubit object
+        qubit to work with
+    sigma : float
+        standard deviation of quasistatic noise
+
+    Returns
+    -------
+    float
+        estimate of the decoherence time for the qubit based on derivatives 
+        of the qubit spectrum w.r.t. detuning.
+    """
     planck = 4.135667662e-9
     h = 1e-3
     coeff_array1 = np.array([1/12, -2/3, 0, 2/3, -1/12])
