@@ -16,6 +16,11 @@ def package_files(step, params, trange, process_array):
     """
     Package the information into a single .npz file 
     to be output
+    
+    Parameters
+    ----------
+    job_index : int
+        integer to calculate a specific job
     """
     ed = np.array(params['ed_point'])
     sigma = np.array(params['sigma'])
@@ -33,7 +38,14 @@ def package_files(step, params, trange, process_array):
 
 
 def runMultivaryJob(job_index):
-    """Run the job specified by the job_index"""
+    """
+    Run the job specified by the job_index
+
+    Parameters
+    ----------
+    job_index : int
+        integer to calculate a specific job
+    """
     operating_points = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
     delta_var = np.linspace(0.9, 1.1, 21)
     ueV_conversion = 0.241799050402417
@@ -65,6 +77,11 @@ def runSingleVaryJob(job_index):
     These jobs will vary one tunnel coupling, 
     then vary the other tunnel coupling. Double variations
     are not considered.
+
+    Parameters
+    ----------
+    job_index : int
+        integer to calculate a specific job
     """
     operating_points = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
     delta_var = np.linspace(0.9, 1.1, 21)
@@ -99,6 +116,11 @@ def runSingleVaryJob(job_index):
 def atomistic_job(job_index):
     """
     Run a single ed, sigma, delta1, delta2 setting for the qubit
+
+    Parameters
+    ----------
+    job_index : int
+        integer to calculate a specific job
     """
     operating_points = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
     delta_var = np.linspace(0.95, 1.05, 11)
@@ -122,9 +144,15 @@ def atomistic_job(job_index):
     package_files(job_index, local_params, trange, process_over_time)
     return None
 
+
 def runSingleTestJob(job_index):
     """
     Run a single job with ideal tunnel couplings
+
+    Parameters
+    ----------
+    job_index : int
+        integer to calculate a specific job
     """
     operating_points = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
     ueV_conversion = 0.241799050402417
