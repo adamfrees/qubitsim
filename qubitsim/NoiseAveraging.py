@@ -9,12 +9,26 @@ import qubitsim.qubit.HybridQubit as hybrid
 import qubitsim.CJFidelities as cj
 
 
-def even_area_sampling(samples, sigma):
-    """Use the percentile point function of the normal distribution 
+def even_area_sampling(nsamples, sigma):
+    """
+    Use the percentile point function of the normal distribution 
     to return the sample points that represent equal area subdivisions
-    underneath a gaussian distribution with mean=0 and sigma=sigma"""
+    underneath a gaussian distribution with mean=0 and sigma=sigma
+
+    Parameters
+    ----------
+    nsamples : float
+        number of samples to return
+    sigma : float
+        standard deviation of the distribution
+    
+    Returns
+    -------
+    float array
+        equal area subdivisions of the normal distribution
+    """
     from scipy.stats import norm
-    samples = norm.ppf(np.linspace(0, 1, samples), 0.0, sigma)
+    samples = norm.ppf(np.linspace(0, 1, nsamples), 0.0, sigma)
     return samples[1:-1]
 
 def noise_doubling(original):
