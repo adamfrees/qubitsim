@@ -138,12 +138,30 @@ def noise_iteration(noise_samples, tfinal):
     return cj_array
 
 
-def noise_averaging(x, noise_samples, cj_array):
+def noise_averaging(x, noise_weights, cj_array):
+    """
+    Perform a gaussian weighted average of the given process matrix 
+    array using Simpson's rule
+
+    Parameters
+    ----------
+    x : (N,) float array
+        sample values of detuning noise
+    noise_weights : (N,) float array
+        weights for the noise samples x
+    cj_array : (9, 9, N,) float array
+        process matrix evaluated at each noise sample
+
+    Returns
+    -------
+    (9, 9,) : float array
+        average process matrix
+    """
     from scipy.integrate import simps
     # norm = np.trapz(noise_samples, x=x)
-    norm = simps(noise_samples, x)
+    norm = simps(noise_weights, x)
     # matrix_int = np.trapz(np.multiply(cj_array, noise_samples), x=x)
-    matrix_int = simps(np.multiply(cj_array, noise_samples), x)
+    matrix_int = simps(np.multiply(cj_array, noise_weights), x)
     return matrix_int / norm
 
 
