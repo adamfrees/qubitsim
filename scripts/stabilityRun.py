@@ -128,7 +128,7 @@ def atomistic_job(job_index):
     sigma_array = np.array([1.0, 5.0, 10.0]) * ueV_conversion
 
     indices = np.unravel_index(job_index, 
-        (len(operating_points, len(sigma_array), len(delta_var), len(delta_var))))
+        (len(operating_points), len(sigma_array), len(delta_var), len(delta_var)))
     op_index = indices[0]
     sigma_index = indices[1]
     delta1_index = indices[2]
