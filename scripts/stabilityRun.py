@@ -113,6 +113,35 @@ def runSingleVaryJob(job_index):
     return None
 
 
+def ideal_job(job_index):
+    """
+    Run a single ed, sigma point at an ideal SOSS
+
+    Parameters
+    ----------
+    job_index : int
+        integer to specifiy job
+    """
+    operating_points = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+    ueV_conversion = 0.241799050402417
+    sigma_array = np.array([1.0, 5.0, 10.0]) * ueV_conversion
+
+    indices = np.unravel_index(job_index,
+        (len(operating_points), len(sigma_array)))
+
+    op_index = indices[0]
+    sigma_index = indices[1]
+
+    local_params = {
+        'ed_point' : operating_points[op_index],
+        'sigma' :    sigma_array[sigma_index],
+        'delta1_var': 1.0,
+        'delta2_var': 1.0
+    }
+    trange, process_over_time = run_time_series(local_params)
+    package_files(job_index, local_params, trange, process_over_time)
+    return None
+
 def atomistic_job(job_index):
     """
     Run a single ed, sigma, delta1, delta2 setting for the qubit
