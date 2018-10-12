@@ -116,9 +116,9 @@ def choosing_final_time(qubit, sigma):
     """ Function to make a guess at the final time required 
     for estimating decoherence"""
 
-    deriv1 = np.abs(qubit.splitting_derivative(1)) / (2*math.pi)
-    deriv2 = np.abs(qubit.splitting_derivative(2)) / (2*math.pi)
-    deriv3 = np.abs(qubit.splitting_derivative(3)) / (2*math.pi)
+    deriv1 = np.abs(qubit.splitting_derivative(1))
+    deriv2 = np.abs(qubit.splitting_derivative(2))
+    deriv3 = np.abs(qubit.splitting_derivative(3))
 
     Gamma21 = (deriv1*sigma) / (math.sqrt(2))
     Gamma22 = (deriv2 * sigma**2) / (math.sqrt(2))
