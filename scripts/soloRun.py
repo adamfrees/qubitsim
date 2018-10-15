@@ -12,14 +12,23 @@ def norm_sin_integral(A, B, omega, exp_phi, sigma):
     """
     Return the integral
     int_{-infty}^{infty} exp(-x^2/(2 sigma^2)) (A e^(-i omega x + phi) + B) / sqrt(2 pi sigma^2).
-    Inputs:
-      A: oscillation amplitude,
-      B: oscillation offset,
-      omega: frequency of oscillation,
-      exp_phi: effect of phase, e^(phi),
-      sigma: standard deviation of quasi-static noise with gaussian weight
-    Outputs:
-      value of integral
+    Parameters:
+    -----------
+    A: float
+        oscillation amplitude,
+    B: float
+        oscillation offset,
+    omega: float
+        frequency of oscillation,
+    exp_phi: complex
+        effect of phase, e^(phi),
+    sigma: float
+        standard deviation of quasi-static noise with gaussian weight
+
+    Returns:
+    --------
+    float
+        value of integral
     """
     return B + A * exp_phi * np.exp(-0.5 * sigma**2 * omega**2)
 
