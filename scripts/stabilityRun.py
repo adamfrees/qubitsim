@@ -203,5 +203,6 @@ def runSingleTestJob(job_index):
 
 if __name__ == "__main__":
     job_index = int(sys.argv[1])
-    atomistic_job(job_index)
+    # atomistic_job(job_index)
+    ideal_job(job_index)
     
