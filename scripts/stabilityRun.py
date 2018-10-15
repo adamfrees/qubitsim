@@ -9,7 +9,8 @@ import math
 
 import numpy as np
 
-from soloRun import run_time_series
+import soloRun
+import RandomSampling
 
 
 def package_files(step, params, trange, process_array):
@@ -66,7 +67,7 @@ def runMultivaryJob(job_index):
             'delta1_var': param_array[start_index + step, 1],
             'delta2_var': param_array[start_index + step, 0]
         }
-        trange, process_over_time = run_time_series(local_params)
+        trange, process_over_time = soloRun.run_time_series(local_params)
         package_files(step, local_params, trange, process_over_time)
     return None
 
@@ -108,7 +109,7 @@ def runSingleVaryJob(job_index):
             'delta1_var': delta_array[step, 0],
             'delta2_var': delta_array[step, 1]
         }
-        trange, process_over_time = run_time_series(local_params)
+        trange, process_over_time = soloRun.run_time_series(local_params)
         package_files(step, local_params, trange, process_over_time)
     return None
 
@@ -138,9 +139,10 @@ def ideal_job(job_index):
         'delta1_var': 1.0,
         'delta2_var': 1.0
     }
-    trange, process_over_time = run_time_series(local_params)
+    trange, process_over_time = RandomSampling.run_time_series(local_params)
     package_files(job_index, local_params, trange, process_over_time)
     return None
+
 
 def atomistic_job(job_index):
     """
@@ -169,7 +171,7 @@ def atomistic_job(job_index):
         'delta1_var': delta_var[delta1_index],
         'delta2_var': delta_var[delta2_index]
     }
-    trange, process_over_time = run_time_series(local_params)
+    trange, process_over_time = soloRun.run_time_series(local_params)
     package_files(job_index, local_params, trange, process_over_time)
     return None
 
@@ -194,7 +196,7 @@ def runSingleTestJob(job_index):
         'delta1_var': 1.0,
         'delta2_var': 1.0
         }
-    trange, process_over_time = run_time_series(local_params)
+    trange, process_over_time = soloRun.run_time_series(local_params)
     package_files(job_index, local_params, trange, process_over_time)
     return None
 
