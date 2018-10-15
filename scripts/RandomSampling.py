@@ -100,7 +100,7 @@ def generate_trange(tmax):
     max_range = int(max_exp * subdim)
     trange = np.zeros((max_range))
     for i in range(1, max_exp+1):
-        local_range = np.linspace(10**(i-1), 10**i, 10)
+        local_range = np.linspace(10**(i-1), 10**i, subdim)
         trange[subdim*(i-1):subdim*(i)] = local_range
     return trange
 
