@@ -9,8 +9,9 @@ import math
 
 import numpy as np
 
-import soloRun
+import FourierSampling
 import RandomSampling
+import LinearSampling
 
 
 def package_files(step, params, trange, process_array):
