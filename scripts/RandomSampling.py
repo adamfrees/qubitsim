@@ -61,7 +61,7 @@ def average_process(qubit, time, sigma):
         Average process matrix
     """
     # noise_samples = 1/(sigma * np.sqrt(2*math.pi)) * np.exp(-(x)**2 / (2*sigma**2))
-    sample_points = np.random.normal(0.0, sigma, 9001)
+    sample_points = np.random.normal(0.0, sigma, 20000)
     average_process = np.zeros((9, 9), dtype=complex)
     for i in range(sample_points.shape[0]):
         ded = sample_points[i]
@@ -98,10 +98,10 @@ def generate_trange(tmax):
     subdim = 50
     max_exp = int(math.ceil(math.log10(tmax)))
     max_range = int(max_exp * subdim)
-    trange = np.zeros((max_range))
+    trange = np.zeros((max_range+1))
     for i in range(1, max_exp+1):
         local_range = np.linspace(10**(i-1), 10**i, subdim)
-        trange[subdim*(i-1):subdim*(i)] = local_range
+        trange[1+subdim*(i-1):1+subdim*(i)] = local_range
     return trange
 
 
