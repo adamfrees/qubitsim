@@ -8,30 +8,6 @@ from context import qubitsim
 from qubitsim.qubit import HybridQubit as hybrid
 from qubitsim import CJFidelities as CJ
 
-def norm_sin_integral(A, B, omega, exp_phi, sigma):
-    """
-    Return the integral
-    int_{-infty}^{infty} exp(-x^2/(2 sigma^2)) (A e^(-i omega x + phi) + B) / sqrt(2 pi sigma^2).
-    Parameters:
-    -----------
-    A: float
-        oscillation amplitude,
-    B: float
-        oscillation offset,
-    omega: float
-        frequency of oscillation,
-    exp_phi: complex
-        effect of phase, e^(phi),
-    sigma: float
-        standard deviation of quasi-static noise with gaussian weight
-
-    Returns:
-    --------
-    float
-        value of integral
-    """
-    return B + A * exp_phi * np.exp(-0.5 * sigma**2 * omega**2)
-
 
 def noise_sample(qubit, ded, time):
     indices = [0, 1]
@@ -45,80 +21,39 @@ def noise_sample(qubit, ded, time):
     else:
         return ChoiSimulation.chi_final_RF(time)
 
-def fourier_find_freq(noise_samples, chi_array):
-    """
-    Find the peaks of the fft of the individual elements of the
-    chi_array
-    Inputs:
-      noise_samples: array of sampled dipolar detuning noise values
-      chi_array: array of resultant process matrices
-        shape: (9, 9, noise_samples.shape[0])
-    Outputs:
-      peak_freq: frequency of the single mode input
-    """
-    dnoise = noise_samples[1] - noise_samples[0]
-    chi_dim = chi_array.shape[0]
-    freq = np.fft.fftfreq(noise_samples.shape[-1], d=dnoise)
-    peak_freq = np.zeros((chi_dim, chi_dim))
-    for i in range(chi_dim):
-        for j in range(chi_dim):
-            data_y = chi_array[i, j, :]
-            sp = np.fft.fft(data_y)
-            peaks = np.where(np.abs(sp) > 10.0 * np.mean(np.abs(sp)))
-            if len(peaks) != 0:
-                avgpeak = np.mean(np.abs(freq[peaks]))
-                peak_freq[i, j] = avgpeak        
-    return peak_freq
-
-
-def process_chi_array(noise_samples, chi_array):
-    noise_dim = chi_array.shape[-1]
-    chi_dim = chi_array.shape[0]
-    
-    minNorm = np.empty((chi_dim, chi_dim))
-    maxNorm = np.empty((chi_dim, chi_dim))
-    zeroValue = np.empty((chi_dim, chi_dim), dtype=complex)
-    offset = np.empty((chi_dim, chi_dim))
-    for i in range(chi_dim):
-        for j in range(chi_dim):
-            minNorm[i, j] = np.min(np.abs(chi_array[i, j, :]))
-            maxNorm[i, j] = np.max(np.abs(chi_array[i, j, :]))
-            zeroValue[i, j] = chi_array[i, j, noise_dim // 2]
-            offset[i, j] = np.mean(np.real(chi_array[i, j, :]))
-    
-    amplitude = maxNorm - minNorm
-    expPhase = np.empty((chi_dim, chi_dim), dtype=complex)
-    for i in range(chi_dim):
-        for j in range(chi_dim):
-            if (np.abs(amplitude[i, j]) <= 1e-8):
-                expPhase[i, j] = 1.0
-            else:
-                expPhase[i, j] = (zeroValue[i, j] - offset[i, j]) / amplitude[i, j]
-
-    peak_freq = fourier_find_freq(noise_samples, chi_array)  
-    return amplitude, offset, peak_freq, expPhase
-
 
 def average_process(qubit, time, sigma):
     """
-    Generate array of process matrices dependent on dipolar 
-    detuning noise
-    Inputs:
-      noise_samples: values of detuning noise in GHz
-      time: time value since initialization in ns
-    Outputs:
-      cj_array: ((9, 9, len(noise_samples))) array of process matrices.
+    Generate array of process matrices dependent on dipolar detuning noise
+    Parameters
+    ----------
+    qubit: HybridQubit object
+        the qubit to simulate under noise
+    time: float
+        time value since initialization
+        Units: ns
+    sigma: float
+        standard deviation of quasistatic charge noise
+        Units: GHz
+   
+    Returns
+    -------
+    weighted_average: ((9, 9)) complex array
+        average process matrix under quasi-static noise
     """
+    from scipy.stats import norm
     max_noise = 2.0 / (time)
-    noise_samples = np.linspace(-max_noise, max_noise, 8193)
+    noise_samples = np.linspace(-max_noise, max_noise, 10001)
+    weights = norm.pdf(noise_samples, 0.0, sigma)
     noise_dim = noise_samples.shape[0]
     cj_array = np.zeros((9, 9, noise_dim), dtype=complex)
     for i in range(noise_dim):
         ded = noise_samples[i]
         cj_array[:, :, i] += noise_sample(qubit, ded, time)
-    
-    amplitude, offset, peakFreq, expPhase = process_chi_array(noise_samples, cj_array)
-    return norm_sin_integral(amplitude, offset, peakFreq, expPhase, sigma)
+
+    norm = np.trapz(weights, x=noise_samples)
+    weighted_average = np.trapz(weights * cj_array, x=noise_samples) / norm
+    return weighted_average
 
 
 def choosing_final_time(qubit, sigma):
