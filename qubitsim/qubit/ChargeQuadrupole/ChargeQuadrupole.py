@@ -101,7 +101,7 @@ class ChargeQuadrupole(object):
         """
         evecs = LA.eigh(self.hamiltonian_lab())[1]
         evecs = ChargeQuadrupole.eigvector_phase_sort(evecs)
-        evecs[:, [0, 1, 2]] = evecs[: [0, 2, 1]]
+        evecs[:, [0, 1, 2]] = evecs[:, [0, 2, 1]]
         return evecs
 
 
@@ -181,7 +181,7 @@ class ChargeQuadrupole(object):
             dipole operator
             Units: dimensionless
         """
-        base_operator = 0.5 * np.diag([-1, 1])
+        base_operator = 0.5 * np.array([[0, 0, 0], [0, 0, 1], [0, 1, 0]])
         return self.qubit_basis().T @ base_operator @ self.qubit_basis()
 
 
