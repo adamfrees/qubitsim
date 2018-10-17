@@ -37,7 +37,7 @@ def noise_sample(qubit, ded, time):
     if time == 0:
         return ChoiSimulation.chi0
     else:
-        return ChoiSimulation.chi_final_RF(time)
+        return ChoiSimulation.chi_final(time)
 
 
 def average_process(qubit, time, sigma):
