@@ -25,7 +25,7 @@ class ChargeDipole(object):
         
         Returns
         -------
-        self : Hybrid qubit object
+        self : charge dipole qubit object
         """
         __slots__ = 'ed', 'delta',
         self.ed = ed
