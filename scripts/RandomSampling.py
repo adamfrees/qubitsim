@@ -63,8 +63,7 @@ def average_process(qubit, time, sigma):
     # noise_samples = 1/(sigma * np.sqrt(2*math.pi)) * np.exp(-(x)**2 / (2*sigma**2))
     sample_points = np.random.normal(0.0, sigma, 20000)
     average_process = np.zeros((9, 9), dtype=complex)
-    for i in range(sample_points.shape[0]):
-        ded = sample_points[i]
+    for ded in sample_points:
         average_process += noise_sample(qubit, ded, time)
     
     average_process /= (sample_points.shape[0] - 1)
