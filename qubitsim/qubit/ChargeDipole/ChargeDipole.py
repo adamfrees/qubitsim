@@ -27,7 +27,7 @@ class ChargeDipole(object):
         -------
         self : Hybrid qubit object
         """
-        __slots__ = 'ed', 'stsplitting', 'delta1', 'delta2',
+        __slots__ = 'ed', 'delta',
         self.ed = ed
         self.delta = delta
         self.dim = 2
