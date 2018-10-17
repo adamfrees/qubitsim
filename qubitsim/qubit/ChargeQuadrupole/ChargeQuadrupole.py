@@ -9,7 +9,7 @@ class ChargeQuadrupole(object):
     """
     Return a charge dipole qubit object
     """
-    def __init__(self, ed, delta):
+    def __init__(self, eq, delta1, delta2, ed):
         """
         Create an instance of a hybrid qubit. The accessible features 
         are ed, stsplitting, delta1, delta2, and dim.
@@ -33,11 +33,11 @@ class ChargeQuadrupole(object):
         -------
         self : charge quadrupole qubit object
         """
-        __slots__ = 'eq, 'delta1', 'delta2', 'ed',
+        __slots__ = 'eq', 'delta1', 'delta2', 'ed',
         self.eq = eq
         self.delta1 = delta1
         self.delta2 = delta2
-        self.ed
+        self.ed = ed
         self.dim = 3
 
     def hamiltonian_lab(self):
@@ -55,8 +55,13 @@ class ChargeQuadrupole(object):
             Hybrid qubit hamiltonian in the lab frame
             Units: rad/ns
         """
-        H0 = np.array([[-0.5 * self.ed, self.delta],
-                       [self.delta, 0.5*self.ed]])
+        eq = self.eq
+        delta1 = self.delta1
+        delta2 = self.delta2
+        ed = self.ed
+        H0 = np.array([[0.5 * eq, (delta1 + delta2)/math.sqrt(2), (delta1 - delta2)/math.sqrt(2)],
+                       [(delta1 + delta2)/math.sqrt(2), -0.5*eq, ed],
+                       [(delta1 + delta2) / math.sqrt(2), ed, -0.5 * eq]])
         return 2 * math.pi * H0
 
 
@@ -78,7 +83,7 @@ class ChargeQuadrupole(object):
             units: GHz
         """
         Hbase = self.hamiltonian_lab() / (2*math.pi)
-        Hdeviation = deviation * np.diag([-0.5, 0.5])
+        Hdeviation = deviation * np.array([[0, 0, 0], [0, 0, 1], [0, 1, 0]])
         evals = np.sort(LA.eigvals(Hbase + Hdeviation))
         return evals[1] - evals[0]
 
@@ -92,9 +97,11 @@ class ChargeQuadrupole(object):
         -------
         (3, 3) float array
             Matrix whose columns are normalized eigenvectors of the system
+            system has been sorted into qubit, leakage order
         """
         evecs = LA.eigh(self.hamiltonian_lab())[1]
-        evecs = ChargeDipole.eigvector_phase_sort(evecs)
+        evecs = ChargeQuadrupole.eigvector_phase_sort(evecs)
+        evecs[:, [0, 1, 2]] = evecs[: [0, 2, 1]]
         return evecs
 
 
@@ -105,10 +112,11 @@ class ChargeQuadrupole(object):
         Returns
         -------
         (3,) float array
-            array of system energies
+            array of system energies with the qubit space first
             Units: rad/ns
         """
-        return LA.eigvalsh(self.hamiltonian_lab())
+        energies = LA.eigvalsh(self.hamiltonian_lab())
+        return energies[0, 2, 1]
 
 
     def qubit_splitting(self):
@@ -141,7 +149,7 @@ class ChargeQuadrupole(object):
             lab frame detuning perturbation
             Units: rad/ns
         """
-        return 2*math.pi*np.diag([-0.5*ded, 0.5*ded])
+        return 2*math.pi*np.array([[0, 0, 0],[0, 0, ded], [0, ded, 0]])
 
 
     def detuning_noise_qubit(self, ded):
@@ -225,3 +233,29 @@ class ChargeQuadrupole(object):
             if eig_matrix[0, i] < 0:
                 eig_matrix[:, i] *= -1
         return eig_matrix
+
+
+class IdealCQ(ChargeQuadrupole):
+    """
+    Create an ideal operating point charge quadrupole qubit object
+    """
+    def __init__(self, eq, delta):
+        """
+        Create an charge quadrupole qubit at an optimal working point
+
+        Parameters
+        ----------
+        eq : float
+            Quadrupolar detuning
+            Units: GHz
+        delta : float
+            matched LC, RC tunnel coupling
+            Units: GHz
+
+        Returns
+        -------
+        IdealCQ object
+        """
+        self.eq = eq
+        self.delta = delta
+        super().__init__(eq, delta, delta, 0.0)
