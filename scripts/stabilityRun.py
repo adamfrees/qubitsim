@@ -12,6 +12,7 @@ import numpy as np
 import FourierSampling
 import RandomSampling
 import LinearSampling
+import NoiseEigenbasis
 
 
 def package_files(step, params, trange, process_array):
@@ -140,7 +141,7 @@ def ideal_job(job_index):
         'delta1_var': 1.0,
         'delta2_var': 1.0
     }
-    trange, process_over_time = RandomSampling.run_time_series(local_params)
+    trange, process_over_time = NoiseEigenbasis.run_time_series(local_params)
     package_files(job_index, local_params, trange, process_over_time)
     return None
 
