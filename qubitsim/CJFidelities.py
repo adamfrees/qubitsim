@@ -11,7 +11,7 @@ class CJ (object):
     of state evolution. This is equivalent to the chi-matrix
     for the evolution
     """
-    def __init__(self, indices, hamiltonian, noise_hamiltonian):
+    def __init__(self, indices, hamiltonian, noise_hamiltonian, noise_type = 'quasistatic'):
         """
         Initialize a Choi-Jamilkowski instance with the subspace
         of interest given by indices, and the kernel of the unitary
@@ -21,12 +21,20 @@ class CJ (object):
         """
         dim = hamiltonian.shape[0]
         norm = 1.0 / float(len(indices))
-        converted_indices = [(int(dim) + 1) * x for x in indices]
+        self.converted_indices = [(int(dim) + 1) * x for x in indices]
         chi0 = np.zeros((dim**2, dim**2), dtype=complex)
-        chi0[np.ix_(converted_indices, converted_indices)] = norm
+        chi0[np.ix_(self.converted_indices, self.converted_indices)] = norm
         self.chi0 = chi0
-        self.kernel = np.kron(np.identity(dim), hamiltonian)
-        self.noise = np.kron(np.identity(dim), noise_hamiltonian)
+        self.noise_type = noise_type
+        if noise_type == 'quasistatic':
+            shifted_hamiltonian = hamiltonian + noise_hamiltonian
+            shifted_energies = LA.eigh(shifted_hamiltonian)[0]
+            shifted_hamiltonian = np.diag(shifted_energies)
+            noise = np.zeros((dim,dim))
+            self.kernel = np.kron(np.identity(dim), shifted_hamiltonian)
+        else:
+            self.kernel = np.kron(np.identity(dim), hamiltonian)
+        self.noise = np.kron(np.identity(dim), noise)
         self.rot_basis = np.kron(np.identity(dim), hamiltonian)
 
     def chi_final(self, tfinal):
@@ -48,6 +56,12 @@ class CJ (object):
             return self.chi0
         else:
             unitary_rotation = LA.expm(1j * tfinal * self.rot_basis)
-            mod_interaction = unitary_rotation @ self.noise @ unitary_rotation.conj().T
-            unitary_operation = LA.expm(-1j * tfinal * mod_interaction)
-            return unitary_operation @ self.chi0 @ unitary_operation.conj().T
+            return unitary_rotation @ self.chi_final(tfinal) @ unitary_rotation.conj().T
+
+    def fidelity(self, tfinal):
+        noisy_chi = self.chi_final_RF(tfinal)
+        chi_product = noisy_chi @ self.chi0
+        #fidelity = 0
+        #for i in self.converted_indices:
+        #    fidelity += chi_product[i,i]
+        return np.trace(chi_product)

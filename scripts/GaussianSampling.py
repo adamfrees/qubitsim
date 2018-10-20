@@ -17,12 +17,12 @@ def noise_sample(qubit, ded, time):
 
     ChoiSimulation = CJ.CJ(indices, H0, noise)
     if time == 0:
-        return ChoiSimulation.chi0
+        return 1.
     else:
-        return ChoiSimulation.chi_final_RF(time)
+        return ChoiSimulation.fidelity(time)
 
 
-def average_process(qubit, time, sigma):
+def average_fidelity(qubit, time, sigma):
     """
     Generate array of process matrices dependent on dipolar detuning noise
     Parameters
@@ -42,14 +42,14 @@ def average_process(qubit, time, sigma):
         average process matrix under quasi-static noise
     """
     from scipy.stats import norm
-    max_noise = 2.0 / (time)
-    noise_samples = np.linspace(-max_noise, max_noise, 101)
+    max_noise = 5.*sigma
+    noise_samples = np.linspace(-max_noise, max_noise, 21)
     weights = norm.pdf(noise_samples, 0.0, sigma)
     noise_dim = noise_samples.shape[0]
-    cj_array = np.zeros((9, 9, noise_dim), dtype=complex)
+    cj_array = np.zeros((noise_dim), dtype=complex)
     for i in range(noise_dim):
         ded = noise_samples[i]
-        cj_array[:, :, i] += noise_sample(qubit, ded, time)
+        cj_array[i] += noise_sample(qubit, ded, time)
 
     norm = np.trapz(weights, x=noise_samples)
     weighted_average = np.trapz(weights * cj_array, x=noise_samples) / norm
@@ -109,13 +109,13 @@ def run_time_series(local_params):
 
     tfinal = choosing_final_time(qubit, sigma)
     trange = np.logspace(0,5,11)#generate_trange(tfinal)
-    cj_array = np.empty((qubit.dim**2, qubit.dim**2, trange.shape[0]), dtype=complex)
+    cj_time_array = np.zeros((trange.shape[0]), dtype=complex)
     for i in range(trange.shape[0]):
         if trange[i] == 0:
-            cj_array[:, :, i] += noise_sample(qubit, 0.0, 0.0)
+            cj_time_array[i] += noise_sample(qubit, 0.0, 0.0)
         else:
-            cj_array[:, :, i] += average_process(qubit, trange[i], sigma)
-    return trange, cj_array
+            cj_time_array[i] += average_fidelity(qubit, trange[i], sigma)
+    return trange, cj_time_array
 
 
 if __name__ == '__main__':
