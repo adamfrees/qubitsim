@@ -21,9 +21,9 @@ class CJ (object):
         """
         dim = hamiltonian.shape[0]
         norm = 1.0 / float(len(indices))
-        self.converted_indices = [(int(dim) + 1) * x for x in indices]
+        converted_indices = [(int(dim) + 1) * x for x in indices]
         chi0 = np.zeros((dim**2, dim**2), dtype=complex)
-        chi0[np.ix_(self.converted_indices, self.converted_indices)] = norm
+        chi0[np.ix_(converted_indices, converted_indices)] = norm
         self.chi0 = chi0
         self.noise_type = noise_type
         if noise_type == 'quasistatic':
