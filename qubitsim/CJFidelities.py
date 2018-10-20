@@ -30,11 +30,11 @@ class CJ (object):
             shifted_hamiltonian = hamiltonian + noise_hamiltonian
             shifted_energies = LA.eigh(shifted_hamiltonian)[0]
             shifted_hamiltonian = np.diag(shifted_energies)
-            noise = np.zeros((dim,dim))
+            noise_hamiltonian = np.zeros((dim,dim))
             self.kernel = np.kron(np.identity(dim), shifted_hamiltonian)
         else:
             self.kernel = np.kron(np.identity(dim), hamiltonian)
-        self.noise = np.kron(np.identity(dim), noise)
+        self.noise = np.kron(np.identity(dim), noise_hamiltonian)
         self.rot_basis = np.kron(np.identity(dim), hamiltonian)
 
     def chi_final(self, tfinal):
@@ -56,7 +56,12 @@ class CJ (object):
             return self.chi0
         else:
             unitary_rotation = LA.expm(1j * tfinal * self.rot_basis)
-            return unitary_rotation @ self.chi_final(tfinal) @ unitary_rotation.conj().T
+            if self.noise_type == 'quasistatic':
+                return unitary_rotation @ self.chi_final(tfinal) @ unitary_rotation.conj().T
+            else:
+                mod_interaction = unitary_rotation @ self.noise @ unitary_rotation.conj().T
+                unitary_operation = LA.expm(-1j * tfinal * mod_interaction)
+                return unitary_operation @ self.chi0 @ unitary_operation.conj().T
 
     def fidelity(self, tfinal):
         noisy_chi = self.chi_final_RF(tfinal)
