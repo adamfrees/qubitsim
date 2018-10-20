@@ -141,7 +141,6 @@ def ideal_job(job_index):
         'delta2_var': 1.0
     }
     trange, process_over_time = LinearSampling.run_time_series(local_params)
-    print(process_over_time)
     package_files(job_index, local_params, trange, process_over_time)
     return None
 
