@@ -66,7 +66,4 @@ class CJ (object):
     def fidelity(self, tfinal):
         noisy_chi = self.chi_final_RF(tfinal)
         chi_product = noisy_chi @ self.chi0
-        #fidelity = 0
-        #for i in self.converted_indices:
-        #    fidelity += chi_product[i,i]
-        return np.trace(chi_product)
+        return np.trace(chi_product).real
